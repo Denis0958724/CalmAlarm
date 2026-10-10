@@ -1,0 +1,30 @@
+name: Історія Telegram (для калібрування)
+
+on:
+  workflow_dispatch:
+    inputs:
+      since:
+        description: 'From date (YYYY-MM-DD)'
+        default: '2026-02-15'
+
+permissions:
+  contents: write
+
+jobs:
+  scrape:
+    runs-on: ubuntu-latest
+    timeout-minutes: 120
+    strategy:
+      fail-fast: false
+      matrix:
+        channel: [kpszsu, air_alert_ua]
+    steps:
+      - uses: actions/checkout@v4
+      - name: Scrape
+        run: |
+          mkdir -p data
+          python3 ci/tg_history.py ${{ matrix.channel }} ${{ github.event.inputs.since }} data/${{ matrix.channel }}.jsonl.gz
+      - uses: actions/upload-artifact@v4
+        with:
+          name: tg-${{ matrix.channel }}
+          path: data/${{ matrix.channel }}.jsonl.gz
