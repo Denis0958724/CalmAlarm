@@ -80,6 +80,11 @@ object Chance {
         val waveEdges = ints(o.getJSONArray("wave_edges"))
         val wave = arr(o.getJSONArray("wave"))
         val recentEnd = o.getDouble("recent_end")
+        val usual: Map<String, Double> = o.optJSONObject("usual")?.let { u ->
+            val m = HashMap<String, Double>()
+            u.keys().forEach { k -> m[normKey(k)] = u.getDouble(k) }
+            m
+        } ?: emptyMap()
         val tg: JSONObject? = o.optJSONObject("tg")
         val tgObl = tg?.optJSONArray("obl")?.let { arr(it) } ?: doubleArrayOf(0.0, 0.0, 0.0)
         val tgDir = tg?.optDouble("dir", 0.0) ?: 0.0
@@ -207,10 +212,12 @@ object Chance {
             val age = now - p.time
             if (age < -5 * MIN) continue
             val t = normalize(p.text)
-            if (age <= 60 * MIN && t.contains("відбій тривоги") && t.contains(endName)) recentEnd = true
+            if (p.channel == "Повітряна тривога") {
+                // Офіційний канал тривог: шукаємо відбій у вашому місці за останню годину.
+                if (age <= 60 * MIN && t.contains("відбій тривоги") && t.contains(endName)) recentEnd = true
+                continue
+            }
             if (age > TG_WINDOW) continue
-            // Самі оголошення тривог («Повітряна тривога в …») — це не загроза, а вже тривога.
-            if (t.contains("повітряна тривога в") || t.contains("відбій тривоги")) continue
             val isClear = CLEAR.any { t.contains(it) }
             val isThreat = THREAT.any { t.contains(it) }
             val mentionsMine = oblRe?.containsMatchIn(t) == true || distRe?.containsMatchIn(t) == true
@@ -218,6 +225,7 @@ object Chance {
                 relevant += p
                 if (isClear) {
                     clear = true
+                    oblCount++
                 } else if (isThreat) {
                     oblCount++
                     if (dirRe?.containsMatchIn(t) == true) dir = true
@@ -348,13 +356,11 @@ object Chance {
         val cClear = if (tg.clear) m.tgClear else 0.0
         z += cTg + cGlobal + cClear
         if (tg.oblCount > 0) {
-            reasons += cTg to (if (tg.dist || tg.dir) "Повітряні сили повідомляють про загрозу у напрямку вашого регіону" else "Повітряні сили згадують загрози у вашій області")
+            reasons += cTg to "Повітряні сили згадують ваш регіон: ${tg.oblCount} повідомл. за 30 хв"
         }
-        if (tg.global) reasons += cGlobal to "Загроза для багатьох областей (ракети, балістика або авіація)"
-        if (tg.clear && tg.oblCount == 0) reasons += cClear to "Монітори повідомляють, що у вашій області чисто"
 
         val p = sigmoid(z).coerceIn(0.01, 0.97)
-        val usual = sigmoid(zUsual).coerceIn(0.01, 0.97)
+        val usual = (m.usual[normKey(unitKey(region))] ?: sigmoid(zUsual)).coerceIn(0.01, 0.97)
         val percent = (p * 100).roundToInt().coerceAtLeast(1)
         val usualPercent = (usual * 100).roundToInt().coerceAtLeast(1)
 

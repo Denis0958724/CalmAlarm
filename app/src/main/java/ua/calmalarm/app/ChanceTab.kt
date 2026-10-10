@@ -163,7 +163,7 @@ fun ChanceTab(region: Region?, onPickRegion: () -> Unit) {
         )
         if (now == null) {
             Text(
-                "Зазвичай у цей час: ${r.usualPercent}%",
+                "Зазвичай для вашого місця: ${r.usualPercent}%",
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(top = 2.dp),
