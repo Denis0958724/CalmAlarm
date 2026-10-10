@@ -1,0 +1,30 @@
+name: Перевірка джерел даних
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  probe:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Fetch sources
+        run: |
+          mkdir -p probe
+          curl -s -m 30 https://siren.pp.ua/api/v3/regions -o probe/regions.json
+          curl -s -m 30 https://siren.pp.ua/api/v3/alerts -o probe/alerts.json
+          curl -s -m 30 -A "Mozilla/5.0" https://t.me/s/air_alert_ua -o probe/air_alert_ua.html
+          date -u > probe/time.txt
+          ls -la probe
+      - name: Push to branch probe
+        run: |
+          git config user.name "ci"
+          git config user.email "ci@users.noreply.github.com"
+          git checkout --orphan probe
+          git rm -rf --cached . > /dev/null
+          git add -f probe
+          git commit -q -m "probe"
+          git push -f origin probe
