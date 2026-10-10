@@ -6,7 +6,7 @@ import java.time.Instant
 import java.time.ZoneId
 import java.time.format.DateTimeFormatter
 
-/** Рівень тривоги за новою системою: червона — ракети/масована атака, жовта — дрони. */
+/** Рівень тривоги за новою системою: червона - ракети/масована атака, жовта - дрони. */
 enum class Level { RED, YELLOW }
 
 fun Level?.title(): String = when (this) {
@@ -70,7 +70,7 @@ data class Waiting(
     val since: Long,
     val deadline: Long,
     val fails: Int,
-    /** null — тривогу ще не підтверджено (наприклад, не було інтернету). */
+    /** null - тривогу ще не підтверджено (наприклад, не було інтернету). */
     val level: Level?,
 ) {
     fun toJson(): JSONObject = JSONObject().apply {
@@ -101,7 +101,7 @@ data class Region(
     val oblastName: String,
     val districtId: String? = null,
     val districtName: String? = null,
-    /** Місто з окремими тривогами (наприклад, м. Харків) — громада всередині району. */
+    /** Місто з окремими тривогами (наприклад, м. Харків) - громада всередині району. */
     val cityId: String? = null,
     val cityName: String? = null,
 ) {

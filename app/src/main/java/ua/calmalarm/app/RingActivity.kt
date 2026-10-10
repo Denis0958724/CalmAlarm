@@ -78,7 +78,7 @@ class RingActivity : ComponentActivity() {
         val snoozeMin = Store.alarm(this, alarmId)?.snoozeMin ?: 5
         setContent {
             CalmAlarmTheme(darkTheme = true) {
-                BackHandler { /* щоб випадково не закрити — вибір лише кнопками */ }
+                BackHandler { /* щоб випадково не закрити - вибір лише кнопками */ }
                 var wasRinging by remember { mutableStateOf(false) }
                 LaunchedEffect(Unit) {
                     RingService.ringing.collect { on ->

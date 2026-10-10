@@ -50,7 +50,7 @@ import kotlinx.coroutines.withContext
 @Composable
 fun RegionTab(region: Region?, onSaved: (Region) -> Unit) {
     val ctx = LocalContext.current
-    // 0 — підсумок, 1 — вибір області, 2 — вибір району
+    // 0 - підсумок, 1 - вибір області, 2 - вибір району
     var step by remember { mutableIntStateOf(if (region == null) 1 else 0) }
     var picked by remember { mutableStateOf<Oblast?>(null) }
 
@@ -133,7 +133,7 @@ private fun RegionSummary(region: Region, onChange: () -> Unit) {
                     Spacer(Modifier.width(12.dp))
                     Text(
                         "Зараз будильник чекає, якщо тривога хоча б в одному районі області. " +
-                            "Виберіть свій район або місто — тоді він зважатиме лише на тривогу саме у вас.",
+                            "Виберіть свій район або місто - тоді він зважатиме лише на тривогу саме у вас.",
                         style = MaterialTheme.typography.bodyMedium,
                     )
                 }

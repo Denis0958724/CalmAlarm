@@ -34,15 +34,15 @@ data class ChanceResult(
  * Ймовірність, що протягом 30 хвилин у вибраному місці оголосять тривогу.
  *
  * Коефіцієнти моделі (res/raw/chance_model.json) підібрані на офіційній історії тривог по районах
- * (грудень 2025 – вересень 2026) та історії повідомлень Повітряних сил і каналу «Повітряна тривога»:
+ * (грудень 2025 - вересень 2026) та історії повідомлень Повітряних сил і каналу «Повітряна тривога»:
  * частота тривог у вашому районі в цю годину, тривоги в інших районах області й у сусідніх областях,
- * нові тривоги за останні 20–30 хв, масштаб атаки, нещодавній відбій, повідомлення про загрози.
+ * нові тривоги за останні 20-30 хв, масштаб атаки, нещодавній відбій, повідомлення про загрози.
  */
 object Chance {
     /** Канали, на яких відкалібровано модель. */
     private val CALIBRATED = listOf("kpszsu" to "Повітряні сили", "air_alert_ua" to "Повітряна тривога")
 
-    /** Канали волонтерів-моніторів — лише для показу повідомлень. */
+    /** Канали волонтерів-моніторів - лише для показу повідомлень. */
     private val EXTRA = listOf("war_monitor" to "monitor", "eRadarrua" to "єРадар", "deraketaua" to "Де Ракета")
 
     private const val MIN = 60_000L
@@ -163,7 +163,7 @@ object Chance {
     private fun fetchChannel(ch: String, title: String): List<MonitorPost> {
         val html = Net.get("https://t.me/s/$ch", 8000, Net.BROWSER_UA)
         val posts = parseTelegram(html, title).toMutableList()
-        // Якщо на першій сторінці менше ніж 30 хв історії — дочитуємо ще одну.
+        // Якщо на першій сторінці менше ніж 30 хв історії - дочитуємо ще одну.
         val oldest = posts.minOfOrNull { it.time }
         if (oldest != null && System.currentTimeMillis() - oldest < TG_WINDOW) {
             Regex("data-post=\"[^/]+/(\\d+)\"").findAll(html).mapNotNull { it.groupValues[1].toLongOrNull() }.minOrNull()?.let { minId ->
@@ -348,7 +348,7 @@ object Chance {
         val recent = tg.recentEnd || now - Store.lastActiveAt(ctx, region.label) <= 60 * MIN
         if (recent) {
             z += m.recentEnd
-            reasons += m.recentEnd to "Нещодавно був відбій — атаки часто повертаються хвилями"
+            reasons += m.recentEnd to "Нещодавно був відбій - атаки часто повертаються хвилями"
         }
 
         val cTg = m.tgObl[minOf(tg.oblCount, 2)] + (if (tg.dir) m.tgDir else 0.0) + (if (tg.dist) m.tgDist else 0.0)
@@ -368,9 +368,9 @@ object Chance {
             .sortedByDescending { abs(it.first) }
             .map { it.second }
             .toMutableList()
-        if (texts.isEmpty()) texts += "Поруч тривог немає — звичайний рівень для вашого району"
-        if (snap == null) texts += "Карта тривог зараз недоступна — оцінка неповна"
-        if (!monitorsOk) texts += "Канали Повітряних сил зараз недоступні — оцінка лише за картою"
+        if (texts.isEmpty()) texts += "Поруч тривог немає - звичайний рівень для вашого району"
+        if (snap == null) texts += "Карта тривог зараз недоступна - оцінка неповна"
+        if (!monitorsOk) texts += "Канали Повітряних сил зараз недоступні - оцінка лише за картою"
 
         return ChanceResult(
             percent = percent,

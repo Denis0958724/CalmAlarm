@@ -220,7 +220,7 @@ fun AlarmTab(region: Region?, onPickRegion: () -> Unit) {
                     }
                     Spacer(Modifier.height(2.dp))
                     Text(
-                        "Не будить під час тривоги — дзвонить після відбою",
+                        "Не будить під час тривоги - дзвонить після відбою",
                         style = MaterialTheme.typography.bodyMedium,
                         color = MaterialTheme.colorScheme.onSurfaceVariant,
                     )
@@ -437,7 +437,7 @@ private fun WaitingCard(w: Waiting, alarm: Alarm?, onCancel: () -> Unit) {
             Spacer(Modifier.height(4.dp))
             Text(
                 "Зараз ${w.level.title()} тривога. Задзвонить одразу після відбою, але не пізніше ${hm(w.deadline)}. " +
-                    "Якщо тривога триватиме довше — сьогодні не дзвонитиме.",
+                    "Якщо тривога триватиме довше - сьогодні не дзвонитиме.",
                 style = MaterialTheme.typography.bodyMedium,
                 color = MaterialTheme.colorScheme.onSecondaryContainer,
                 modifier = Modifier.padding(end = 10.dp),

@@ -242,7 +242,7 @@ fun ChanceTab(region: Region?, onPickRegion: () -> Unit) {
         }
         Text(
             "Оцінку розраховано за історією офіційних тривог по районах, поточною картою тривог " +
-                "і повідомленнями Повітряних сил. Це прогноз, а не тривога — завжди дійте за офіційним сигналом.",
+                "і повідомленнями Повітряних сил. Це прогноз, а не тривога - завжди дійте за офіційним сигналом.",
             style = MaterialTheme.typography.bodySmall,
             color = MaterialTheme.colorScheme.onSurfaceVariant,
         )

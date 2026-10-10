@@ -8,15 +8,15 @@ import java.time.ZonedDateTime
 
 /**
  * Головна логіка «розумного» будильника:
- * у звичайний час дзвонить як завжди; якщо в цей момент триває тривога потрібного рівня —
- * чекає відбою і дзвонить одразу після нього; якщо тривога триває довше за ліміт — не дзвонить.
+ * у звичайний час дзвонить як завжди; якщо в цей момент триває тривога потрібного рівня -
+ * чекає відбою і дзвонить одразу після нього; якщо тривога триває довше за ліміт - не дзвонить.
  */
 object AlarmEngine {
     private const val TAG = "CalmAlarm"
     private const val CHECK_EVERY_MS = 60_000L
     private const val RETRY_NET_MS = 30_000L
 
-    const val NOTE_AFTER_ALERT = "Тривога закінчилась — можна вставати ☀️"
+    const val NOTE_AFTER_ALERT = "Тривога закінчилась - можна вставати ☀️"
     private const val NOTE_NO_NET =
         "Не вдалося перевірити тривогу (немає інтернету), тому будильник спрацював як звичайно."
 
@@ -55,7 +55,7 @@ object AlarmEngine {
         val st = status(ctx, region)
         when {
             st == null -> {
-                // Немає інтернету — ще кілька спроб протягом ~1,5 хв, потім дзвонимо.
+                // Немає інтернету - ще кілька спроб протягом ~1,5 хв, потім дзвонимо.
                 Store.putWaiting(ctx, Waiting(id, now, now + a.maxWaitMin * 60_000L, fails = 1, level = null))
                 Scheduler.scheduleCheck(ctx, id, now + RETRY_NET_MS)
             }

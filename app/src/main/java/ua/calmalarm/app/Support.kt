@@ -88,7 +88,7 @@ fun SupportSheet(onDismiss: () -> Unit) {
                 fontWeight = FontWeight.SemiBold,
             )
             Text(
-                "CalmAlarm безкоштовний і без реклами. Якщо він вам допомагає — можна підтримати розробку будь-якою сумою.",
+                "CalmAlarm безкоштовний і без реклами. Якщо він вам допомагає - можна підтримати розробку будь-якою сумою.",
                 style = MaterialTheme.typography.bodyLarge,
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
             )

@@ -142,7 +142,7 @@ object Notifs {
         nm(ctx).notify(infoId(0), n)
     }
 
-    /** Якщо сервіс будильника не вдалося запустити — звичайне гучне сповіщення зі звуком будильника. */
+    /** Якщо сервіс будильника не вдалося запустити - звичайне гучне сповіщення зі звуком будильника. */
     fun showFallbackRing(ctx: Context, a: Alarm, note: String) {
         val full = PendingIntent.getActivity(
             ctx, 7, ringActivityIntent(ctx, a.id, a.timeText, note),

@@ -20,7 +20,7 @@ data class AlertEntry(
 
 data class Snapshot(
     val entries: List<AlertEntry>,
-    /** true — дані з резервного джерела (без районів і рівнів). */
+    /** true - дані з резервного джерела (без районів і рівнів). */
     val fallback: Boolean,
     val time: Long = System.currentTimeMillis(),
 )
@@ -34,10 +34,10 @@ data class RegionStatus(
 )
 
 object AlertApi {
-    /** Відкрите дзеркало API «Повітряна тривога» (ukrainealarm.com) — без ключа, з рівнями тривог. */
+    /** Відкрите дзеркало API «Повітряна тривога» (ukrainealarm.com) - без ключа, з рівнями тривог. */
     private const val SIREN = "https://siren.pp.ua/api/v3/alerts"
 
-    /** Резервне джерело — лише області, без рівнів. */
+    /** Резервне джерело - лише області, без рівнів. */
     private const val UBILLING = "https://ubilling.net.ua/aerialalerts/"
 
     private val KYIV: ZoneId get() = KYIV_ZONE
@@ -73,7 +73,7 @@ object AlertApi {
                 var yellow = false
                 val levels = a.optJSONArray("activeAlertLevels")
                 if (levels == null || levels.length() == 0) {
-                    red = true // рівень не вказано — вважаємо червоною
+                    red = true // рівень не вказано - вважаємо червоною
                 } else {
                     for (k in 0 until levels.length()) {
                         val l = levels.getJSONObject(k).optString("alertLevel")
@@ -145,9 +145,9 @@ object AlertApi {
 
     /**
      * Чи є тривога саме у вибраному регіоні:
-     * — місто: тривога на область, район міста або саме місто;
-     * — район: тривога на область або на цей район;
-     * — «вся область»: тривога на область або хоча б в одному її районі чи місті.
+     * - місто: тривога на область, район міста або саме місто;
+     * - район: тривога на область або на цей район;
+     * - «вся область»: тривога на область або хоча б в одному її районі чи місті.
      */
     fun statusFor(ctx: Context, snap: Snapshot, region: Region): RegionStatus {
         val now = System.currentTimeMillis()

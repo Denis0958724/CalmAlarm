@@ -23,7 +23,7 @@ class RingService : Service() {
     companion object {
         const val ACTION_STOP = "ua.calmalarm.app.STOP"
         const val ACTION_SNOOZE = "ua.calmalarm.app.SNOOZE"
-        /** Екран будильника відкрито — прибираємо спливаюче сповіщення, щоб не перекривало його. */
+        /** Екран будильника відкрито - прибираємо спливаюче сповіщення, щоб не перекривало його. */
         const val ACTION_SHOWN = "ua.calmalarm.app.SHOWN"
         const val EXTRA_NOTE = "note"
         const val EXTRA_TIME = "time"
@@ -123,11 +123,11 @@ class RingService : Service() {
         handler.removeCallbacks(autoStop)
         handler.postDelayed(autoStop, AUTO_STOP_MS)
 
-        // Якщо екран увімкнено і дозволено — одразу відкриваємо екран будильника.
+        // Якщо екран увімкнено і дозволено - одразу відкриваємо екран будильника.
         try {
             startActivity(Notifs.ringActivityIntent(this, id, currentTime, note))
         } catch (_: Exception) {
-            // Android може заборонити відкривати екран з фону — тоді спрацює повноекранне сповіщення.
+            // Android може заборонити відкривати екран з фону - тоді спрацює повноекранне сповіщення.
         }
         return START_NOT_STICKY
     }
