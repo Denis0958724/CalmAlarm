@@ -40,7 +40,16 @@ object AlertApi {
     /** Резервне джерело — лише області, без рівнів. */
     private const val UBILLING = "https://ubilling.net.ua/aerialalerts/"
 
-    private val KYIV: ZoneId = ZoneId.of("Europe/Kyiv")
+    /** На старіших Android у базі часових поясів ще немає «Europe/Kyiv», лише «Europe/Kiev». */
+    private val KYIV: ZoneId by lazy {
+        listOf("Europe/Kyiv", "Europe/Kiev").firstNotNullOfOrNull { id ->
+            try {
+                ZoneId.of(id)
+            } catch (e: Exception) {
+                null
+            }
+        } ?: ZoneId.systemDefault()
+    }
 
     /** Завантажує поточні тривоги. Кидає виняток, якщо обидва джерела недоступні. */
     fun fetch(timeoutMs: Int = 5000): Snapshot {

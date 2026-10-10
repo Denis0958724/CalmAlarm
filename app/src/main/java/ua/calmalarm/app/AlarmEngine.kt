@@ -27,7 +27,7 @@ object AlarmEngine {
 
     private fun status(ctx: Context, region: Region): RegionStatus? = try {
         AlertApi.statusFor(ctx, AlertApi.fetch(4000), region)
-    } catch (e: Exception) {
+    } catch (e: Throwable) {
         Log.w(TAG, "alert check failed: $e")
         null
     }
