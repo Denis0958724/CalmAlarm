@@ -161,6 +161,17 @@ fun ChanceTab(region: Region?, onPickRegion: () -> Unit) {
             style = MaterialTheme.typography.bodyLarge,
             color = MaterialTheme.colorScheme.onSurfaceVariant,
         )
+        if (now == null) {
+            Text(
+                "Зазвичай у цей час: ${r.usualPercent}%",
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(top = 2.dp),
+                textAlign = TextAlign.Center,
+                style = MaterialTheme.typography.bodyMedium,
+                color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.8f),
+            )
+        }
 
         if (r.reasons.isNotEmpty()) {
             Spacer(Modifier.height(20.dp))
@@ -230,8 +241,8 @@ fun ChanceTab(region: Region?, onPickRegion: () -> Unit) {
             }
         }
         Text(
-            "Це приблизна оцінка за картою тривог і каналами моніторів (Повітряні сили, monitor, єРадар, Де Ракета). " +
-                "Вона не замінює офіційну тривогу — завжди дійте за сигналом тривоги.",
+            "Оцінку розраховано за історією офіційних тривог по районах, поточною картою тривог " +
+                "і повідомленнями Повітряних сил. Це прогноз, а не тривога — завжди дійте за офіційним сигналом.",
             style = MaterialTheme.typography.bodySmall,
             color = MaterialTheme.colorScheme.onSurfaceVariant,
         )

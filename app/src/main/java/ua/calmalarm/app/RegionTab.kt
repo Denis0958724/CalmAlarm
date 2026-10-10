@@ -65,9 +65,11 @@ fun RegionTab(region: Region?, onSaved: (Region) -> Unit) {
         step == 0 && region != null -> RegionSummary(region, onChange = { step = 1 })
         step == 2 && current != null -> DistrictPicker(
             oblast = current,
-            selectedId = region?.districtId,
+            selectedId = region?.cityId ?: region?.districtId,
             onBack = { step = 1 },
-            onPick = { d -> save(Region(current.id, current.name, d?.id, d?.name)) },
+            onPick = { d, city ->
+                save(Region(current.id, current.name, d?.id, d?.name, city?.id, city?.short))
+            },
         )
         else -> OblastPicker(
             selectedId = region?.oblastId,
@@ -130,8 +132,8 @@ private fun RegionSummary(region: Region, onChange: () -> Unit) {
                     Icon(Icons.Filled.Info, contentDescription = null, tint = MaterialTheme.colorScheme.primary)
                     Spacer(Modifier.width(12.dp))
                     Text(
-                        "Порада: виберіть ще й район. Тривоги часто оголошують лише в частині області — " +
-                            "з районом будильник точніше знатиме, чи є тривога саме у вас.",
+                        "Зараз будильник чекає, якщо тривога хоча б в одному районі області. " +
+                            "Виберіть свій район або місто — тоді він зважатиме лише на тривогу саме у вас.",
                         style = MaterialTheme.typography.bodyMedium,
                     )
                 }
@@ -210,7 +212,7 @@ private fun DistrictPicker(
     oblast: Oblast,
     selectedId: String?,
     onBack: () -> Unit,
-    onPick: (District?) -> Unit,
+    onPick: (District?, City?) -> Unit,
 ) {
     val ctx = LocalContext.current
     var districts by remember(oblast.id) { mutableStateOf<List<District>?>(null) }
@@ -238,14 +240,20 @@ private fun DistrictPicker(
         item {
             PickRow(
                 "Вся область",
-                "Тривога рахується, лише коли її оголошено на всю область",
+                "Будильник чекатиме, якщо тривога хоча б в одному районі області",
                 selectedId == null,
-            ) { onPick(null) }
+            ) { onPick(null, null) }
         }
         val list = districts
         when {
-            list != null -> items(list, key = { it.id }) { d ->
-                PickRow(d.name, null, d.id == selectedId) { onPick(d) }
+            list != null -> {
+                val cities = list.flatMap { d -> d.cities.map { d to it } }
+                items(cities, key = { "c" + it.second.id }) { (d, c) ->
+                    PickRow(c.short, "Місто з окремими тривогами · ${d.name}", c.id == selectedId) { onPick(d, c) }
+                }
+                items(list, key = { it.id }) { d ->
+                    PickRow(d.name, null, d.id == selectedId) { onPick(d, null) }
+                }
             }
             failed -> item {
                 Column(

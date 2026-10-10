@@ -87,7 +87,7 @@ object Notifs {
             .setAutoCancel(false)
             .setFullScreenIntent(full, true)
             .setContentIntent(full)
-            .addAction(0, "Ще 5 хв", snooze)
+            .addAction(0, "Ще ${Store.alarm(ctx, alarmId)?.snoozeMin ?: 5} хв", snooze)
             .addAction(0, "Вимкнути", stop)
             .build()
     }

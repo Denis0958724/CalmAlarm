@@ -32,6 +32,7 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.RadioButton
+import androidx.compose.material3.Slider
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
@@ -73,7 +74,8 @@ fun AlarmEditor(
         var tone by remember { mutableIntStateOf(initial.tone) }
         var red by remember { mutableStateOf(initial.skipRed) }
         var yellow by remember { mutableStateOf(initial.skipYellow) }
-        var wait by remember { mutableIntStateOf(initial.maxWaitMin) }
+        var wait by remember { mutableIntStateOf(initial.maxWaitMin.coerceIn(WAIT_MIN, WAIT_MAX)) }
+        var snooze by remember { mutableIntStateOf(initial.snoozeMin.coerceIn(SNOOZE_LOW, SNOOZE_HIGH)) }
 
         DisposableEffect(Unit) {
             onDispose { Tones.stopPreview() }
@@ -104,6 +106,7 @@ fun AlarmEditor(
                                 skipRed = red,
                                 skipYellow = yellow,
                                 maxWaitMin = wait,
+                                snoozeMin = snooze,
                                 enabled = true,
                             ),
                         )
@@ -207,25 +210,28 @@ fun AlarmEditor(
                     )
 
                     // ----- Ліміт очікування -----
-                    SectionTitle("Якщо тривога затягнеться")
-                    Text(
-                        "Не дзвонити зовсім, якщо тривога триває довше ніж:",
-                        style = MaterialTheme.typography.bodyMedium,
-                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    SliderSetting(
+                        title = "Якщо тривога затягнеться",
+                        hint = "Не дзвонити зовсім, якщо тривога триває довше ніж",
+                        valueText = waitLabel(wait),
+                        value = wait,
+                        range = WAIT_MIN..WAIT_MAX,
+                        step = WAIT_STEP,
+                        enabled = red || yellow,
+                        onChange = { wait = it },
                     )
-                    Spacer(Modifier.height(8.dp))
-                    FlowRow(
-                        horizontalArrangement = Arrangement.spacedBy(8.dp),
-                    ) {
-                        WAIT_OPTIONS.forEach { (m, label) ->
-                            FilterChip(
-                                selected = wait == m,
-                                onClick = { wait = m },
-                                label = { Text(label) },
-                                enabled = red || yellow,
-                            )
-                        }
-                    }
+
+                    // ----- Відкладання -----
+                    SliderSetting(
+                        title = "Кнопка «Ще трохи»",
+                        hint = "На скільки відкласти будильник, коли він дзвонить",
+                        valueText = "$snooze хв",
+                        value = snooze,
+                        range = SNOOZE_LOW..SNOOZE_HIGH,
+                        step = 1,
+                        enabled = true,
+                        onChange = { snooze = it },
+                    )
 
                     if (!isNew) {
                         Spacer(Modifier.height(28.dp))
@@ -240,6 +246,63 @@ fun AlarmEditor(
                 }
             }
         }
+    }
+}
+
+@Composable
+private fun SliderSetting(
+    title: String,
+    hint: String,
+    valueText: String,
+    value: Int,
+    range: IntRange,
+    step: Int,
+    enabled: Boolean,
+    onChange: (Int) -> Unit,
+) {
+    Row(Modifier.fillMaxWidth().padding(top = 24.dp), verticalAlignment = Alignment.Bottom) {
+        Text(
+            title,
+            style = MaterialTheme.typography.titleMedium,
+            fontWeight = FontWeight.SemiBold,
+            modifier = Modifier.weight(1f),
+        )
+        Text(
+            valueText,
+            style = MaterialTheme.typography.titleMedium,
+            fontWeight = FontWeight.SemiBold,
+            color = if (enabled) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSurfaceVariant,
+        )
+    }
+    Text(
+        hint,
+        style = MaterialTheme.typography.bodyMedium,
+        color = MaterialTheme.colorScheme.onSurfaceVariant,
+        modifier = Modifier.padding(top = 2.dp),
+    )
+    val steps = ((range.last - range.first) / step - 1).coerceAtLeast(0)
+    Slider(
+        value = value.toFloat(),
+        onValueChange = { v ->
+            val snapped = (Math.round((v - range.first) / step) * step + range.first).coerceIn(range.first, range.last)
+            if (snapped != value) onChange(snapped)
+        },
+        valueRange = range.first.toFloat()..range.last.toFloat(),
+        steps = steps,
+        enabled = enabled,
+    )
+    Row(Modifier.fillMaxWidth()) {
+        Text(
+            if (range.first < 60) "${range.first} хв" else waitLabel(range.first),
+            style = MaterialTheme.typography.labelSmall,
+            color = MaterialTheme.colorScheme.onSurfaceVariant,
+            modifier = Modifier.weight(1f),
+        )
+        Text(
+            if (range.last <= 60) "${range.last} хв" else waitLabel(range.last),
+            style = MaterialTheme.typography.labelSmall,
+            color = MaterialTheme.colorScheme.onSurfaceVariant,
+        )
     }
 }
 

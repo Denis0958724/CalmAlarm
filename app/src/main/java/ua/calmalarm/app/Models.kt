@@ -25,6 +25,8 @@ data class Alarm(
     val skipRed: Boolean = true,
     val skipYellow: Boolean = true,
     val maxWaitMin: Int = 120,
+    /** На скільки хвилин відкладати кнопкою «Ще N хв». */
+    val snoozeMin: Int = 5,
 ) {
     val timeText: String get() = "%02d:%02d".format(hour, minute)
     val waitsForAlerts: Boolean get() = skipRed || skipYellow
@@ -39,6 +41,7 @@ data class Alarm(
         put("red", skipRed)
         put("yellow", skipYellow)
         put("wait", maxWaitMin)
+        put("snooze", snoozeMin)
     }
 
     companion object {
@@ -55,6 +58,7 @@ data class Alarm(
                 skipRed = o.optBoolean("red", true),
                 skipYellow = o.optBoolean("yellow", true),
                 maxWaitMin = o.optInt("wait", 120),
+                snoozeMin = o.optInt("snooze", 5),
             )
         }
     }
@@ -97,15 +101,21 @@ data class Region(
     val oblastName: String,
     val districtId: String? = null,
     val districtName: String? = null,
+    /** Місто з окремими тривогами (наприклад, м. Харків) — громада всередині району. */
+    val cityId: String? = null,
+    val cityName: String? = null,
 ) {
-    val subtitle: String get() = districtName ?: "Вся область"
-    val label: String get() = if (districtName != null) "$oblastName · $districtName" else oblastName
+    val place: String? get() = cityName ?: districtName
+    val subtitle: String get() = place ?: "Вся область"
+    val label: String get() = if (place != null) "$oblastName · $place" else oblastName
 
     fun toJson(): JSONObject = JSONObject().apply {
         put("oid", oblastId)
         put("on", oblastName)
         put("did", districtId ?: "")
         put("dn", districtName ?: "")
+        put("cid", cityId ?: "")
+        put("cn", cityName ?: "")
     }
 
     companion object {
@@ -114,6 +124,8 @@ data class Region(
             oblastName = o.getString("on"),
             districtId = o.optString("did").ifBlank { null },
             districtName = o.optString("dn").ifBlank { null },
+            cityId = o.optString("cid").ifBlank { null },
+            cityName = o.optString("cn").ifBlank { null },
         )
     }
 }
@@ -130,17 +142,33 @@ fun daysText(days: Set<Int>): String = when {
     else -> days.sorted().joinToString(", ") { DAY_SHORT[it - 1] }
 }
 
-/** Варіанти «не дзвонити взагалі, якщо тривога триває довше ніж…». */
-val WAIT_OPTIONS = listOf(
-    30 to "30 хв",
-    60 to "1 год",
-    90 to "1,5 год",
-    120 to "2 год",
-    180 to "3 год",
-    240 to "4 год",
-)
+/** Межі повзунка «не дзвонити взагалі, якщо тривога триває довше ніж…» (хвилини). */
+const val WAIT_MIN = 10
+const val WAIT_MAX = 360
+const val WAIT_STEP = 10
+const val SNOOZE_LOW = 1
+const val SNOOZE_HIGH = 30
 
-fun waitLabel(min: Int): String = WAIT_OPTIONS.firstOrNull { it.first == min }?.second ?: "$min хв"
+fun waitLabel(min: Int): String {
+    val h = min / 60
+    val m = min % 60
+    return when {
+        h == 0 -> "$m хв"
+        m == 0 -> "$h год"
+        else -> "$h год $m хв"
+    }
+}
+
+/** Київський час. На старіших Android у базі ще немає «Europe/Kyiv», лише «Europe/Kiev». */
+val KYIV_ZONE: ZoneId by lazy {
+    listOf("Europe/Kyiv", "Europe/Kiev").firstNotNullOfOrNull { id ->
+        try {
+            ZoneId.of(id)
+        } catch (e: Exception) {
+            null
+        }
+    } ?: ZoneId.systemDefault()
+}
 
 private val HM: DateTimeFormatter = DateTimeFormatter.ofPattern("HH:mm")
 

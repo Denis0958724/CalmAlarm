@@ -14,7 +14,7 @@ object Store {
     const val KEY_WAITING = "waiting"
     const val KEY_REGION = "region"
     private const val KEY_NEXT_ID = "next_id"
-    private const val KEY_REGIONS_CACHE = "regions_cache"
+    private const val KEY_REGIONS_CACHE = "regions_cache_v2"
 
     fun prefs(ctx: Context): SharedPreferences =
         ctx.applicationContext.getSharedPreferences(PREFS, Context.MODE_PRIVATE)
@@ -114,6 +114,17 @@ object Store {
 
     fun saveRegionsCache(ctx: Context, s: String) {
         prefs(ctx).edit().putString(KEY_REGIONS_CACHE, s).apply()
+    }
+
+    // ---------- Коли востаннє бачили тривогу у вибраному регіоні ----------
+
+    fun noteActive(ctx: Context, key: String) {
+        prefs(ctx).edit().putString("last_active_key", key).putLong("last_active_at", System.currentTimeMillis()).apply()
+    }
+
+    fun lastActiveAt(ctx: Context, key: String): Long {
+        val p = prefs(ctx)
+        return if (p.getString("last_active_key", null) == key) p.getLong("last_active_at", 0L) else 0L
     }
 
     // ---------- Різне ----------

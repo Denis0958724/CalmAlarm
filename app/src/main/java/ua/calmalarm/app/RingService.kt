@@ -25,7 +25,6 @@ class RingService : Service() {
         const val ACTION_SNOOZE = "ua.calmalarm.app.SNOOZE"
         const val EXTRA_NOTE = "note"
         const val EXTRA_TIME = "time"
-        const val SNOOZE_MIN = 5
         private const val AUTO_STOP_MS = 10 * 60 * 1000L
 
         private val _ringing = MutableStateFlow(false)
@@ -75,7 +74,10 @@ class RingService : Service() {
             }
             ACTION_SNOOZE -> {
                 val id = intent.getIntExtra(Scheduler.EXTRA_ID, currentId)
-                if (id >= 0) Scheduler.scheduleSnooze(this, id, SNOOZE_MIN)
+                if (id >= 0) {
+                    val minutes = Store.alarm(this, id)?.snoozeMin ?: 5
+                    Scheduler.scheduleSnooze(this, id, minutes)
+                }
                 stopRinging()
                 stopSelf()
                 return START_NOT_STICKY

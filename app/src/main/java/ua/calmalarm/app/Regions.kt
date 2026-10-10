@@ -18,7 +18,12 @@ data class Oblast(
     val hasDistricts: Boolean get() = id != "31" && id != "9999"
 }
 
-data class District(val id: String, val name: String)
+data class City(val id: String, val name: String) {
+    /** «м. Харків та Харківська територіальна громада» → «м. Харків». */
+    val short: String get() = name.substringBefore(" та ").trim()
+}
+
+data class District(val id: String, val name: String, val cities: List<City> = emptyList())
 
 object Regions {
     private const val E = "(?!\\p{L})" // кінець слова
@@ -156,28 +161,42 @@ object Regions {
 
     private const val REGIONS_URL = "https://siren.pp.ua/api/v3/regions"
 
+    /** Міста, для яких оголошують окремі тривоги (не лише разом із районом). */
+    private val CITY_PREFIXES = listOf("м. Харків ", "м. Запоріжжя ", "м. Нікополь ", "м. Марганець ", "м. Краматорськ ")
+
     @Volatile
     private var districtsMem: Map<String, List<District>>? = null
 
     @Volatile
     private var parentMem: Map<String, String>? = null
 
+    @Volatile
+    private var districtIds: Set<String> = emptySet()
+
     private fun applyCache(raw: String): Boolean = try {
         val root = JSONObject(raw)
         val o = root.getJSONObject("o")
         val m = root.getJSONObject("m")
         val d = mutableMapOf<String, List<District>>()
+        val dids = mutableSetOf<String>()
         o.keys().forEach { sid ->
             val arr = o.getJSONArray(sid)
             d[sid] = (0 until arr.length()).map {
                 val e = arr.getJSONArray(it)
-                District(e.getString(0), e.getString(1))
+                val citiesArr = e.optJSONArray(2) ?: JSONArray()
+                val cities = (0 until citiesArr.length()).map { k ->
+                    val c = citiesArr.getJSONArray(k)
+                    City(c.getString(0), c.getString(1))
+                }
+                dids += e.getString(0)
+                District(e.getString(0), e.getString(1), cities)
             }.sortedBy { it.name }
         }
         val p = mutableMapOf<String, String>()
         m.keys().forEach { k -> p[k] = m.getString(k) }
         districtsMem = d
         parentMem = p
+        districtIds = dids
         true
     } catch (e: Exception) {
         false
@@ -209,13 +228,20 @@ object Regions {
             for (j in 0 until children.length()) {
                 val d = children.getJSONObject(j)
                 val did = d.getString("regionId")
-                if (d.optString("regionType") == "District") {
-                    arr.put(JSONArray().put(did).put(d.optString("regionName")))
-                }
                 m.put(did, sid)
-                val comms = d.optJSONArray("regionChildIds") ?: continue
+                val cities = JSONArray()
+                val comms = d.optJSONArray("regionChildIds") ?: JSONArray()
                 for (k in 0 until comms.length()) {
-                    m.put(comms.getJSONObject(k).getString("regionId"), sid)
+                    val c = comms.getJSONObject(k)
+                    val cid = c.getString("regionId")
+                    val cname = c.optString("regionName")
+                    m.put(cid, sid)
+                    if (CITY_PREFIXES.any { cname.startsWith(it) }) {
+                        cities.put(JSONArray().put(cid).put(cname))
+                    }
+                }
+                if (d.optString("regionType") == "District") {
+                    arr.put(JSONArray().put(did).put(d.optString("regionName")).put(cities))
                 }
             }
             o.put(sid, arr)
@@ -231,5 +257,17 @@ object Regions {
         if (byId.containsKey(regionId)) return regionId
         ensureMem(ctx)
         return parentMem?.get(regionId)
+    }
+
+    fun isDistrict(ctx: Context, regionId: String): Boolean {
+        ensureMem(ctx)
+        return regionId in districtIds
+    }
+
+    /** Скільки районів в області (для підрахунку масштабу тривоги). */
+    fun districtCount(ctx: Context, oblastId: String): Int {
+        if (oblastId == "31") return 1
+        ensureMem(ctx)
+        return districtsMem?.get(oblastId)?.size?.takeIf { it > 0 } ?: 5
     }
 }
