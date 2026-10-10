@@ -1,0 +1,34 @@
+name: Опублікувати дані калібрування
+
+on:
+  workflow_dispatch:
+    inputs:
+      run_id:
+        description: 'Run id of the Telegram history workflow'
+        required: true
+
+permissions:
+  contents: write
+  actions: read
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/download-artifact@v4
+        with:
+          run-id: ${{ github.event.inputs.run_id }}
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          path: dl
+      - name: Push to branch data
+        run: |
+          mkdir -p out && find dl -name '*.jsonl.gz' -exec cp {} out/ \;
+          ls -la out
+          git config user.name "ci"
+          git config user.email "ci@users.noreply.github.com"
+          git checkout --orphan data
+          git rm -rf --cached . > /dev/null
+          git add -f out
+          git commit -q -m "Telegram history from run ${{ github.event.inputs.run_id }}"
+          git push -f origin data

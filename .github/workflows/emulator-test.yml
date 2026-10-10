@@ -34,8 +34,10 @@ jobs:
       - name: Pick a calm oblast for the test
         run: |
           curl -s -m 20 https://siren.pp.ua/api/v3/alerts -o /tmp/alerts.json || true
-          python3 ci/pick_calm.py /tmp/alerts.json > /tmp/calm.txt || echo "11|Закарпатська область" > /tmp/calm.txt
-          cat /tmp/calm.txt
+          curl -s -m 30 https://siren.pp.ua/api/v3/regions -o /tmp/regions.json || true
+          python3 ci/pick_calm.py /tmp/alerts.json /tmp/regions.json > /tmp/calm.txt || echo "11|Закарпатська область" > /tmp/calm.txt
+          python3 ci/pick_active.py /tmp/alerts.json /tmp/regions.json > /tmp/active.txt || echo "16|Луганська область||" > /tmp/active.txt
+          cat /tmp/calm.txt /tmp/active.txt
 
       - name: Run tests on emulator
         uses: reactivecircus/android-emulator-runner@v2

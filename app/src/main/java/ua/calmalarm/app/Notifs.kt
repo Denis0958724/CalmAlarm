@@ -60,7 +60,7 @@ object Notifs {
             .putExtra(RingService.EXTRA_NOTE, note)
             .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_NO_USER_ACTION)
 
-    fun ringing(ctx: Context, alarmId: Int, time: String, note: String): Notification {
+    fun ringing(ctx: Context, alarmId: Int, time: String, note: String, quiet: Boolean = false): Notification {
         val full = PendingIntent.getActivity(
             ctx, 7, ringActivityIntent(ctx, alarmId, time, note),
             PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE,
@@ -75,7 +75,7 @@ object Notifs {
             Intent(ctx, RingService::class.java).setAction(RingService.ACTION_SNOOZE).putExtra(Scheduler.EXTRA_ID, alarmId),
             PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE,
         )
-        return NotificationCompat.Builder(ctx, CH_RING)
+        val b = NotificationCompat.Builder(ctx, if (quiet) CH_STATUS else CH_RING)
             .setSmallIcon(R.drawable.ic_notif)
             .setContentTitle("Будильник $time")
             .setContentText(note.ifBlank { "Час вставати!" })
@@ -85,11 +85,12 @@ object Notifs {
             .setVisibility(NotificationCompat.VISIBILITY_PUBLIC)
             .setOngoing(true)
             .setAutoCancel(false)
-            .setFullScreenIntent(full, true)
+            .setSilent(quiet)
             .setContentIntent(full)
             .addAction(0, "Ще ${Store.alarm(ctx, alarmId)?.snoozeMin ?: 5} хв", snooze)
             .addAction(0, "Вимкнути", stop)
-            .build()
+        if (!quiet) b.setFullScreenIntent(full, true)
+        return b.build()
     }
 
     fun showWaiting(ctx: Context, a: Alarm, w: Waiting) {

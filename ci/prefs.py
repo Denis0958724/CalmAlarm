@@ -14,7 +14,7 @@ def s(name, val):
     return f'    <string name="{name}">{html.escape(val)}</string>'
 
 
-def seed(now_str, times_out):
+def seed(now_str, times_out, active=None):
     now = datetime.datetime.strptime(now_str.strip(), "%Y-%m-%d %H:%M:%S")
     a = now.replace(second=0) + datetime.timedelta(minutes=2)
     b = a + datetime.timedelta(minutes=5)
@@ -24,7 +24,8 @@ def seed(now_str, times_out):
         # B: rings even during an alert
         {"id": 2, "h": b.hour, "m": b.minute, "days": [], "on": True, "tone": 0, "red": False, "yellow": False, "wait": 120},
     ]
-    region = {"oid": "16", "on": "Луганська область", "did": "", "dn": ""}
+    oid, on, did, dn = (active or "16|Луганська область||").strip().split("|")
+    region = {"oid": oid, "on": on, "did": did, "dn": dn}
     with open(times_out, "w") as f:
         f.write(f"{int((a - now).total_seconds())} {int((b - now).total_seconds())} {a:%H:%M} {b:%H:%M}\n")
     print("<?xml version='1.0' encoding='utf-8' standalone='yes' ?>")
@@ -49,6 +50,6 @@ def set_region(path, oid, name):
 
 if __name__ == "__main__":
     if sys.argv[1] == "seed":
-        seed(sys.argv[2], sys.argv[3])
+        seed(sys.argv[2], sys.argv[3], open(sys.argv[4], encoding="utf-8").read() if len(sys.argv) > 4 else None)
     else:
         set_region(sys.argv[2], sys.argv[3], sys.argv[4])

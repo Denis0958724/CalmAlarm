@@ -23,6 +23,8 @@ class RingService : Service() {
     companion object {
         const val ACTION_STOP = "ua.calmalarm.app.STOP"
         const val ACTION_SNOOZE = "ua.calmalarm.app.SNOOZE"
+        /** Екран будильника відкрито — прибираємо спливаюче сповіщення, щоб не перекривало його. */
+        const val ACTION_SHOWN = "ua.calmalarm.app.SHOWN"
         const val EXTRA_NOTE = "note"
         const val EXTRA_TIME = "time"
         private const val AUTO_STOP_MS = 10 * 60 * 1000L
@@ -37,6 +39,7 @@ class RingService : Service() {
     private var volume = 0.2f
     private var currentId = -1
     private var currentTime = ""
+    private var currentNote = ""
 
     private val alarmAttrs: AudioAttributes = AudioAttributes.Builder()
         .setUsage(AudioAttributes.USAGE_ALARM)
@@ -72,6 +75,18 @@ class RingService : Service() {
                 stopSelf()
                 return START_NOT_STICKY
             }
+            ACTION_SHOWN -> {
+                if (_ringing.value) {
+                    try {
+                        getSystemService(android.app.NotificationManager::class.java)
+                            .notify(Notifs.ID_RING, Notifs.ringing(this, currentId, currentTime, currentNote, quiet = true))
+                    } catch (_: Exception) {
+                    }
+                } else {
+                    stopSelf()
+                }
+                return START_NOT_STICKY
+            }
             ACTION_SNOOZE -> {
                 val id = intent.getIntExtra(Scheduler.EXTRA_ID, currentId)
                 if (id >= 0) {
@@ -88,6 +103,7 @@ class RingService : Service() {
         val note = intent?.getStringExtra(EXTRA_NOTE).orEmpty()
         val alarm = Store.alarm(this, id)
         currentId = id
+        currentNote = note
         currentTime = alarm?.timeText ?: hm(System.currentTimeMillis())
 
         val notification = Notifs.ringing(this, id, currentTime, note)

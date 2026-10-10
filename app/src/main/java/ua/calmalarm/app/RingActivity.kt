@@ -96,6 +96,14 @@ class RingActivity : ComponentActivity() {
         }
     }
 
+    override fun onResume() {
+        super.onResume()
+        try {
+            startService(Intent(this, RingService::class.java).setAction(RingService.ACTION_SHOWN))
+        } catch (_: Exception) {
+        }
+    }
+
     private fun send(action: String) {
         try {
             startService(Intent(this, RingService::class.java).setAction(action).putExtra(Scheduler.EXTRA_ID, alarmId))

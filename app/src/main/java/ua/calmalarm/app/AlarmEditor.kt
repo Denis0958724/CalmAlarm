@@ -280,7 +280,6 @@ private fun SliderSetting(
         color = MaterialTheme.colorScheme.onSurfaceVariant,
         modifier = Modifier.padding(top = 2.dp),
     )
-    val steps = ((range.last - range.first) / step - 1).coerceAtLeast(0)
     Slider(
         value = value.toFloat(),
         onValueChange = { v ->
@@ -288,7 +287,6 @@ private fun SliderSetting(
             if (snapped != value) onChange(snapped)
         },
         valueRange = range.first.toFloat()..range.last.toFloat(),
-        steps = steps,
         enabled = enabled,
     )
     Row(Modifier.fillMaxWidth()) {

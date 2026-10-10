@@ -71,6 +71,7 @@ sleep 2
 shot 06_region_summary
 tap text "Змінити регіон"
 sleep 2
+swipe_up
 tap text "Харківська область"
 sleep 8
 shot 06b_kharkiv_districts
@@ -98,9 +99,10 @@ shot 10b_alarm_list
 # ---------- 5. Alarm logic with seeded data ----------
 adb shell am force-stop $PKG
 NOW=$(emu_now)
-python3 ci/prefs.py seed "$NOW" /tmp/times.txt > "$OUT/seed_prefs.xml"
+python3 ci/prefs.py seed "$NOW" /tmp/times.txt /tmp/active.txt > "$OUT/seed_prefs.xml"
+cp /tmp/active.txt "$OUT/active_region.txt"
 read -r WAIT_A WAIT_B TIME_A TIME_B < /tmp/times.txt
-log "now=$NOW alarm A=$TIME_A (in ${WAIT_A}s, waits for alert, region Luhansk) alarm B=$TIME_B (in ${WAIT_B}s, always rings)"
+log "now=$NOW alarm A=$TIME_A (in ${WAIT_A}s, waits for alert, region $(cat /tmp/active.txt)) alarm B=$TIME_B (in ${WAIT_B}s, always rings)"
 adb push "$OUT/seed_prefs.xml" /data/local/tmp/p.xml
 adb shell "cat /data/local/tmp/p.xml | run-as $PKG sh -c 'cat > shared_prefs/calmalarm.xml'"
 adb shell am start -n $PKG/.MainActivity
