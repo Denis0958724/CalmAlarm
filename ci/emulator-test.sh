@@ -50,6 +50,11 @@ tap text "Броварський район"
 sleep 8
 shot 03_alarm_tab_with_status
 uidump > "$OUT/03_alarm_tab.xml"
+tap content-desc "Підтримати автора"
+sleep 3
+shot 03b_support_sheet
+adb shell input keyevent KEYCODE_BACK
+sleep 2
 
 # ---------- 2. Chance tab ----------
 tap text "Ймовірність"
@@ -64,6 +69,15 @@ shot 05_chance_details
 tap text "Регіон"
 sleep 2
 shot 06_region_summary
+tap text "Змінити регіон"
+sleep 2
+tap text "Харківська область"
+sleep 8
+shot 06b_kharkiv_districts
+tap content-desc "Назад"
+sleep 1
+tap content-desc "Назад"
+sleep 1
 
 # ---------- 4. Alarm editor ----------
 tap text "Будильник"
