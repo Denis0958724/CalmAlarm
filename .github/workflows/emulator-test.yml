@@ -1,0 +1,61 @@
+name: Перевірка на емуляторі
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  emulator:
+    runs-on: ubuntu-latest
+    timeout-minutes: 50
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+
+      - uses: gradle/actions/setup-gradle@v4
+
+      - name: Build debug APK
+        run: |
+          chmod +x gradlew
+          ./gradlew assembleDebug
+
+      - name: Enable KVM
+        run: |
+          echo 'KERNEL=="kvm", GROUP="kvm", MODE="0666", OPTIONS+="static_node=kvm"' | sudo tee /etc/udev/rules.d/99-kvm4all.rules
+          sudo udevadm control --reload-rules
+          sudo udevadm trigger --name-match=kvm
+
+      - name: Pick a calm oblast for the test
+        run: |
+          curl -s -m 20 https://siren.pp.ua/api/v3/alerts -o /tmp/alerts.json || true
+          python3 ci/pick_calm.py /tmp/alerts.json > /tmp/calm.txt || echo "11|Закарпатська область" > /tmp/calm.txt
+          cat /tmp/calm.txt
+
+      - name: Run on emulator
+        uses: reactivecircus/android-emulator-runner@v2
+        with:
+          api-level: 34
+          target: google_apis
+          arch: x86_64
+          profile: pixel_6
+          disable-animations: true
+          emulator-boot-timeout: 900
+          emulator-options: -no-window -gpu swiftshader_indirect -noaudio -no-boot-anim -no-snapshot
+          script: bash ci/emulator-test.sh
+
+      - name: Publish screenshots to branch ci-screens
+        if: always()
+        run: |
+          git config user.name "ci"
+          git config user.email "ci@users.noreply.github.com"
+          git checkout --orphan ci-screens
+          git rm -rf --cached . > /dev/null
+          git add -f ci-out
+          git commit -q -m "Screenshots from run ${{ github.run_number }}"
+          git push -f origin ci-screens
