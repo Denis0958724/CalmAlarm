@@ -37,19 +37,39 @@ jobs:
           python3 ci/pick_calm.py /tmp/alerts.json > /tmp/calm.txt || echo "11|Закарпатська область" > /tmp/calm.txt
           cat /tmp/calm.txt
 
-      - name: Run on emulator
-        uses: reactivecircus/android-emulator-runner@v2
-        with:
-          api-level: 33
-          target: google_apis
-          arch: x86_64
-          profile: pixel_6
-          disable-animations: true
-          emulator-boot-timeout: 900
-          ram-size: 4096M
-          cores: 4
-          emulator-options: -no-window -gpu swiftshader_indirect -noaudio -no-boot-anim -camera-back none
-          script: bash ci/emulator-test.sh
+      - name: Start emulator (manual, with logs)
+        timeout-minutes: 25
+        run: |
+          mkdir -p ci-out
+          {
+            echo "== kvm"; ls -la /dev/kvm; nproc; free -g
+            echo "== sdk"; ls $ANDROID_HOME; ls $ANDROID_HOME/emulator | head
+          } > ci-out/env.txt 2>&1
+          SDKM=$(ls $ANDROID_HOME/cmdline-tools/*/bin/sdkmanager | head -1)
+          AVDM=$(dirname $SDKM)/avdmanager
+          yes | $SDKM --licenses > /dev/null 2>&1 || true
+          $SDKM "emulator" "platform-tools" "system-images;android-33;google_apis;x86_64" > ci-out/sdkmanager.txt 2>&1
+          $ANDROID_HOME/emulator/emulator -accel-check >> ci-out/env.txt 2>&1 || true
+          $ANDROID_HOME/emulator/emulator -version | head -1 >> ci-out/env.txt 2>&1 || true
+          echo no | $AVDM create avd -f -n test -k "system-images;android-33;google_apis;x86_64" -d pixel_6 > ci-out/avd.txt 2>&1
+          printf 'hw.ramSize=4096\nhw.cpu.ncore=4\n' >> ~/.android/avd/test.avd/config.ini
+          nohup $ANDROID_HOME/emulator/emulator -avd test -no-window -gpu swiftshader_indirect -noaudio \
+            -no-boot-anim -no-snapshot -camera-back none -camera-front none -no-metrics \
+            > ci-out/emulator.log 2>&1 &
+          ADB=$ANDROID_HOME/platform-tools/adb
+          timeout 600 $ADB wait-for-device || echo 'wait-for-device timed out' >> ci-out/env.txt
+          for i in $(seq 1 180); do
+            if [ "$($ADB shell getprop sys.boot_completed 2>/dev/null | tr -d '\r')" = "1" ]; then
+              echo "booted after $((i*5))s" >> ci-out/env.txt; break
+            fi
+            sleep 5
+          done
+          $ADB shell getprop sys.boot_completed >> ci-out/env.txt 2>&1
+          echo "$ANDROID_HOME/platform-tools" >> $GITHUB_PATH
+
+      - name: Run test script
+        timeout-minutes: 25
+        run: bash ci/emulator-test.sh
 
       - name: Publish screenshots to branch ci-screens
         if: always()
