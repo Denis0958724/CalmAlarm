@@ -31,7 +31,6 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Refresh
 import androidx.compose.material.icons.filled.Warning
-import androidx.compose.material.icons.outlined.FavoriteBorder
 import androidx.compose.material.icons.outlined.LocationOn
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
@@ -208,19 +207,23 @@ fun AlarmTab(region: Region?, onPickRegion: () -> Unit) {
             verticalArrangement = Arrangement.spacedBy(12.dp),
         ) {
             item {
-                Row(verticalAlignment = Alignment.Top) {
-                    ScreenHeader(
-                        "Будильник",
-                        "Не будить під час тривоги — дзвонить після відбою",
-                        Modifier.weight(1f),
-                    )
-                    IconButton(onClick = { showSupport = true }, modifier = Modifier.padding(top = 16.dp)) {
-                        Icon(
-                            Icons.Outlined.FavoriteBorder,
-                            contentDescription = "Підтримати автора",
-                            tint = MaterialTheme.colorScheme.primary,
+                Column(Modifier.padding(top = 16.dp, bottom = 12.dp)) {
+                    Row(verticalAlignment = Alignment.CenterVertically) {
+                        Text(
+                            "Будильник",
+                            style = MaterialTheme.typography.headlineMedium,
+                            fontWeight = FontWeight.SemiBold,
+                            color = MaterialTheme.colorScheme.onBackground,
+                            modifier = Modifier.weight(1f),
                         )
+                        SupportButton(onClick = { showSupport = true })
                     }
+                    Spacer(Modifier.height(2.dp))
+                    Text(
+                        "Не будить під час тривоги — дзвонить після відбою",
+                        style = MaterialTheme.typography.bodyMedium,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    )
                 }
             }
             if (ringing) {

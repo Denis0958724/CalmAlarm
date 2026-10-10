@@ -12,7 +12,14 @@ import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.size
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.FilledTonalButton
+import androidx.compose.material3.Icon
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalBottomSheet
@@ -34,6 +41,30 @@ import androidx.compose.ui.unit.sp
 object Support {
     const val CARD = "5168752118023400"
     val cardPretty: String get() = CARD.chunked(4).joinToString(" ")
+}
+
+/** Помітна, але спокійна кнопка «Підтримати» для заголовка: жовта «пігулка» з синім серцем. */
+@Composable
+fun SupportButton(onClick: () -> Unit) {
+    FilledTonalButton(
+        onClick = onClick,
+        modifier = Modifier.height(38.dp),
+        shape = RoundedCornerShape(19.dp),
+        contentPadding = PaddingValues(start = 12.dp, end = 16.dp),
+        colors = ButtonDefaults.filledTonalButtonColors(
+            containerColor = MaterialTheme.colorScheme.secondaryContainer,
+            contentColor = MaterialTheme.colorScheme.onSecondaryContainer,
+        ),
+    ) {
+        Icon(
+            Icons.Filled.Favorite,
+            contentDescription = null,
+            tint = Color(0xFF2F5BD3),
+            modifier = Modifier.size(18.dp),
+        )
+        Spacer(Modifier.width(6.dp))
+        Text("Підтримати", style = MaterialTheme.typography.labelLarge, fontWeight = FontWeight.SemiBold)
+    }
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
