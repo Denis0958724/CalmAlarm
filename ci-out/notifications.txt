@@ -1,0 +1,1 @@
+    post_frequency{user_id=0,pkg=ua.calmalarm.app,day=0,count=5,muted=3/3,demoted=3}

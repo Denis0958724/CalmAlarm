@@ -1,0 +1,52 @@
+      com.android.internal.display.cutout.emulation.double
+      com.android.providers.telephony
+      ua.calmalarm.app
+      com.android.theme.icon.pebble
+      com.android.providers.media
+      com.android.internal.systemui.navbar.gestural_wide_back
+      com.android.theme.icon.vessel
+      com.android.theme.color.cinnamon
+      com.android.theme.icon_pack.rounded.systemui
+--
+      listener=com.android.server.AlarmManagerService$3@bbc980c
+Batch{ae89555 num=1 start=297549 end=297549 flgs=0x3}:
+    RTC_WAKEUP #0: Alarm{745ab6a type 0 when 1791651960000 ua.calmalarm.app}
+      tag=*walarm*:ua.calmalarm.app.FIRE
+      type=0 expectedWhenElapsed=+1m43s104ms expectedMaxWhenElapsed=+1m43s104ms whenElapsed=+1m43s104ms maxWhenElapsed=+1m43s104ms when=2026-10-10 20:06:00.000
+      window=0 repeatInterval=0 count=0 flags=0x3
+      Alarm clock:
+        triggerTime=2026-10-10 20:06:00.000
+        showIntent=PendingIntent{e0785b: PendingIntentRecord{5a128f8 ua.calmalarm.app startActivity}}
+      operation=PendingIntent{7ea31d1: PendingIntentRecord{28b1436 ua.calmalarm.app broadcastIntent}}
+Batch{d243f37 num=1 start=597549 end=597549 flgs=0x3}:
+    RTC_WAKEUP #0: Alarm{f3bdca4 type 0 when 1791652260000 ua.calmalarm.app}
+      tag=*walarm*:ua.calmalarm.app.FIRE
+      type=0 expectedWhenElapsed=+6m43s104ms expectedMaxWhenElapsed=+6m43s104ms whenElapsed=+6m43s104ms maxWhenElapsed=+6m43s104ms when=2026-10-10 20:11:00.000
+      window=0 repeatInterval=0 count=0 flags=0x3
+      Alarm clock:
+        triggerTime=2026-10-10 20:11:00.000
+        showIntent=PendingIntent{48f1a0d: PendingIntentRecord{5a128f8 ua.calmalarm.app startActivity}}
+      operation=PendingIntent{dec3dc2: PendingIntentRecord{e7397d3 ua.calmalarm.app broadcastIntent}}
+Batch{fac1f10 num=2 start=1833117 end=2136466 flgs=0x8}:
+    ELAPSED #1: Alarm{4204a09 type 3 when 1833117 android}
+      tag=*alarm*:com.android.server.action.NETWORK_STATS_POLL
+      type=3 expectedWhenElapsed=+27m18s672ms expectedMaxWhenElapsed=+49m48s672ms whenElapsed=+27m18s672ms maxWhenElapsed=+49m48s672ms when=+27m18s672ms
+      window=+22m30s0ms repeatInterval=1800000 count=0 flags=0x8
+      operation=PendingIntent{444740e: PendingIntentRecord{d55de2f android broadcastIntent}}
+--
+    com.android.providers.calendar, u0: -2m12s508ms, 
+
+  Next wake from idle: Alarm{745ab6a type 0 when 1791651960000 ua.calmalarm.app}
+    tag=*walarm*:ua.calmalarm.app.FIRE
+    type=0 expectedWhenElapsed=+1m43s104ms expectedMaxWhenElapsed=+1m43s104ms whenElapsed=+1m43s104ms maxWhenElapsed=+1m43s104ms when=2026-10-10 20:06:00.000
+    window=0 repeatInterval=0 count=0 flags=0x3
+    Alarm clock:
+      triggerTime=2026-10-10 20:06:00.000
+      showIntent=PendingIntent{e0785b: PendingIntentRecord{5a128f8 ua.calmalarm.app startActivity}}
+    operation=PendingIntent{7ea31d1: PendingIntentRecord{28b1436 ua.calmalarm.app broadcastIntent}}
+
+  Past-due non-wakeup alarms: (none)
+    Number of delayed alarms: 0, total delay time: 0
+    Max delay time: 0, max non-interactive time: 0
+
+  Broadcast ref count: 0

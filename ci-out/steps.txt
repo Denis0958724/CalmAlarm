@@ -1,0 +1,42 @@
+[17:02:08] screenshot 01_first_launch_region
+[17:02:10] tap text='Київська область' at 258 1555
+[17:02:20] screenshot 02_districts
+[17:02:23] tap text='Броварський район' at 282 779
+[17:02:31] screenshot 03_alarm_tab_with_status
+[17:02:36] tap content-desc='Підтримати автора' at 970 193
+[17:02:39] screenshot 03b_support_sheet
+[17:02:44] tap text='Ймовірність' at 540 2082
+[17:03:09] screenshot 04_chance
+[17:03:15] tap text='Що пишуть монітори' at 269 1145
+[17:03:19] screenshot 05_chance_details
+[17:03:22] tap text='Регіон' at 907 2082
+[17:03:24] screenshot 06_region_summary
+[17:03:26] tap text='Змінити регіон' at 540 710
+[17:03:32] tap text='Харківська область' at 283 1902
+[17:03:41] screenshot 06b_kharkiv_districts
+[17:03:43] tap content-desc='Назад' at 110 218
+[17:03:46] tap content-desc='Назад' at 110 218
+[17:03:49] tap text='Будильник' at 173 2082
+[17:03:54] tap content-desc='Додати будильник' at 948 1796
+[17:03:57] screenshot 07_editor_top
+[17:04:00] screenshot 08_editor_middle
+[17:04:02] screenshot 09_editor_bottom
+[17:04:05] tap text='Зберегти' at 937 172
+[17:04:06] screenshot 10_alarm_saved
+[17:04:10] screenshot 10b_alarm_list
+[17:04:10] now=2026-10-10 20:04:09 alarm A=20:06 (in 111s, waits for alert, region 20|Сумська область|114|Сумський район) alarm B=20:11 (in 411s, always rings)
+[17:04:17] screenshot 11_seeded_alarms
+[17:06:37] screenshot 12_waiting_notification
+[17:06:42] screenshot 13_waiting_card
+[17:06:46] region switched to 11 Закарпатська область; waiting for next check
+[17:08:06] screenshot 14_ring_after_alert_end
+[17:08:10] NOT FOUND text='Вимкнути'
+[17:08:14] screenshot 15_after_stop
+[17:08:16] sleeping 193 s until alarm B
+[17:11:30] screenshot 16_ring_locked_screen
+[17:11:35] tap text='Вимкнути' at 540 1980
+[17:11:38] screenshot 17_after_stop_b
+[17:11:46] screenshot 18_dark_alarm_tab
+[17:11:49] tap text='Ймовірність' at 540 2082
+[17:12:09] screenshot 19_dark_chance
+[17:12:10] done

@@ -1,0 +1,2 @@
+  mCurrentFocus=Window{de64766 u0 ua.calmalarm.app/ua.calmalarm.app.RingActivity}
+  mFocusedApp=ActivityRecord{db2f530 u0 ua.calmalarm.app/.RingActivity t11}

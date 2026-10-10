@@ -1,0 +1,11 @@
+<?xml version='1.0' encoding='utf-8' standalone='yes' ?>
+<map>
+    <string name="last_active_key">Сумська область · Сумський район</string>
+    <string name="waiting">{&quot;1&quot;:{&quot;id&quot;:1,&quot;since&quot;:1791651960018,&quot;deadline&quot;:1791653760018,&quot;fails&quot;:0,&quot;level&quot;:&quot;RED&quot;}}</string>
+    <boolean name="asked_notif_2" value="true" />
+    <long name="last_active_at" value="1791651974850" />
+    <string name="alarms">[{&quot;id&quot;:2,&quot;h&quot;:20,&quot;m&quot;:11,&quot;days&quot;:[],&quot;on&quot;:true,&quot;tone&quot;:0,&quot;red&quot;:false,&quot;yellow&quot;:false,&quot;wait&quot;:120,&quot;snooze&quot;:5},{&quot;id&quot;:1,&quot;h&quot;:20,&quot;m&quot;:6,&quot;days&quot;:[],&quot;on&quot;:false,&quot;tone&quot;:1,&quot;red&quot;:true,&quot;yellow&quot;:true,&quot;wait&quot;:30,&quot;snooze&quot;:5}]</string>
+    <string name="region">{&quot;oid&quot;: &quot;20&quot;, &quot;on&quot;: &quot;Сумська область&quot;, &quot;did&quot;: &quot;114&quot;, &quot;dn&quot;: &quot;Сумський район&quot;}</string>
+    <boolean name="asked_notif" value="true" />
+    <int name="next_id" value="10" />
+</map>

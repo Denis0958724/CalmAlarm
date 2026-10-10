@@ -1,0 +1,15 @@
+ACTIVITY MANAGER SERVICES (dumpsys activity services)
+  User 0 active services:
+  * ServiceRecord{dd9f40 u0 ua.calmalarm.app/.RingService}
+    intent={cmp=ua.calmalarm.app/.RingService}
+    packageName=ua.calmalarm.app
+    processName=ua.calmalarm.app
+    baseDir=/data/app/~~KZKpktQfGXo3svstKZ1qSg==/ua.calmalarm.app-wJVxGXlVeAyG8s0LYWqIIw==/base.apk
+    dataDir=/data/user/0/ua.calmalarm.app
+    app=ProcessRecord{346e4c5 3233:ua.calmalarm.app/u0a130}
+    allowWhileInUsePermissionInFgs=false
+    recentCallingPackage=ua.calmalarm.app
+    isForeground=true foregroundId=1 foregroundNoti=Notification(channel=ring shortcut=null contentView=null vibrate=null sound=null defaults=0x0 flags=0xe2 color=0x00000000 category=alarm actions=2 vis=PUBLIC)
+    createTime=-1m13s20ms startingBgTimeout=--
+    lastActivity=-1m13s20ms restartTime=-1m13s20ms createdFromFg=false
+    startRequested=true delayedStop=false stopIfKilled=true callStart=true lastStartId=1

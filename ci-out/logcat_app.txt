@@ -1,0 +1,340 @@
+10-10 20:02:00.178   513   570 V BackupManagerService: [UserID:0] restoreAtInstall pkg=ua.calmalarm.app token=1 restoreSet=0
+10-10 20:02:00.216  1494  1494 I MediaProvider: Invalidating LocalCallingIdentity cache for package ua.calmalarm.app. Reason: package android.intent.action.PACKAGE_ADDED
+10-10 20:02:00.219   513   554 W BroadcastQueue: Background execution not allowed: receiving Intent { act=android.intent.action.PACKAGE_ADDED dat=package:ua.calmalarm.app flg=0x4000010 (has extras) } to com.android.packageinstaller/.PackageInstalledReceiver
+10-10 20:02:00.219   513   554 W BroadcastQueue: Background execution not allowed: receiving Intent { act=android.intent.action.PACKAGE_ADDED dat=package:ua.calmalarm.app flg=0x4000010 (has extras) } to com.android.gallery3d/.app.PackagesMonitor
+10-10 20:02:00.226   718   718 D AvrcpMediaPlayerList: Name of package changed: ua.calmalarm.app
+10-10 20:02:00.261   718   718 D AvrcpMediaPlayerList: Name of package changed: ua.calmalarm.app
+10-10 20:02:00.586   513  1742 I ActivityTaskManager: START u0 {flg=0x10000000 cmp=ua.calmalarm.app/.MainActivity} from uid 2000
+10-10 20:02:00.700   513   555 I ActivityManager: Start proc 2423:ua.calmalarm.app/u0a130 for pre-top-activity {ua.calmalarm.app/ua.calmalarm.app.MainActivity}
+10-10 20:02:00.827  2423  2423 I a.calmalarm.ap: Late-enabling -Xcheck:jni
+10-10 20:02:00.857  2423  2423 I a.calmalarm.ap: Unquickening 12 vdex files!
+10-10 20:02:00.872  2423  2423 W a.calmalarm.ap: Unexpected CPU variant for X86 using defaults: x86_64
+10-10 20:02:01.700   513   615 V WindowManager: Orientation start waiting for draw, mDrawState=DRAW_PENDING in Window{105302a u0 Splash Screen ua.calmalarm.app}, surfaceController Surface(name=Splash Screen ua.calmalarm.app)/@0x8ac0106
+10-10 20:02:03.732  2423  2423 W a.calmalarm.ap: Class androidx.compose.runtime.snapshots.SnapshotStateList failed lock verification and will run slower.
+10-10 20:02:03.732  2423  2423 W a.calmalarm.ap: Common causes for lock verification issues are non-optimized dex code
+10-10 20:02:03.732  2423  2423 W a.calmalarm.ap: and incorrect proguard optimizations.
+10-10 20:02:05.089   513   553 D ArtManagerInternalImpl: /data/misc/iorapd/ua.calmalarm.app/1/ua.calmalarm.app.MainActivity/compiled_traces/compiled_trace.pb doesn't exist
+10-10 20:02:05.265   513   553 I ActivityTaskManager: Displayed ua.calmalarm.app/.MainActivity: +4s505ms
+10-10 20:02:05.653   419  2419 I iorapd  : Perfetto TraceBuffer saved to file: /data/misc/iorapd/ua.calmalarm.app/1/ua.calmalarm.app.MainActivity/raw_traces/1791651725652721966.perfetto_trace.pb
+10-10 20:02:07.671  2462  2462 D AndroidRuntime: >>>>>> START com.android.internal.os.RuntimeInit uid 2000 <<<<<<
+10-10 20:02:07.681  2462  2462 I AndroidRuntime: Using default boot image
+10-10 20:02:07.681  2462  2462 I AndroidRuntime: Leaving lock profiling enabled
+10-10 20:02:07.875  2462  2462 D AndroidRuntime: Calling main entry com.android.commands.uiautomator.Launcher
+10-10 20:02:08.623   513   570 I AppsFilter: interaction: PackageSetting{6512e45 ua.calmalarm.app/10130} -> PackageSetting{b07e99a com.android.camera2/10111} BLOCKED
+10-10 20:02:08.623   513   570 I AppsFilter: interaction: PackageSetting{6512e45 ua.calmalarm.app/10130} -> PackageSetting{2a792cb com.android.calendar/10109} BLOCKED
+10-10 20:02:08.623   513   570 I AppsFilter: interaction: PackageSetting{6512e45 ua.calmalarm.app/10130} -> PackageSetting{4158aa8 com.android.gallery3d/10112} BLOCKED
+10-10 20:02:08.623   513   570 I AppsFilter: interaction: PackageSetting{6512e45 ua.calmalarm.app/10130} -> PackageSetting{35b69c1 com.android.inputmethod.latin/10107} BLOCKED
+10-10 20:02:08.894  2423  2479 D ProfileInstaller: Installing profile for ua.calmalarm.app
+10-10 20:02:09.086  2462  2462 D AndroidRuntime: Shutting down VM
+10-10 20:02:09.614  2486  2486 D AndroidRuntime: >>>>>> START com.android.internal.os.RuntimeInit uid 2000 <<<<<<
+10-10 20:02:09.615  2486  2486 I AndroidRuntime: Using default boot image
+10-10 20:02:09.615  2486  2486 I AndroidRuntime: Leaving lock profiling enabled
+10-10 20:02:09.685  2486  2486 D AndroidRuntime: Calling main entry com.android.commands.input.Input
+10-10 20:02:09.711  2486  2486 D AndroidRuntime: Shutting down VM
+10-10 20:02:20.590  2511  2511 D AndroidRuntime: >>>>>> START com.android.internal.os.RuntimeInit uid 2000 <<<<<<
+10-10 20:02:20.593  2511  2511 I AndroidRuntime: Using default boot image
+10-10 20:02:20.593  2511  2511 I AndroidRuntime: Leaving lock profiling enabled
+10-10 20:02:20.752  2511  2511 D AndroidRuntime: Calling main entry com.android.commands.uiautomator.Launcher
+10-10 20:02:21.913  2511  2511 D AndroidRuntime: Shutting down VM
+10-10 20:02:22.396  2529  2529 D AndroidRuntime: >>>>>> START com.android.internal.os.RuntimeInit uid 2000 <<<<<<
+10-10 20:02:22.397  2529  2529 I AndroidRuntime: Using default boot image
+10-10 20:02:22.397  2529  2529 I AndroidRuntime: Leaving lock profiling enabled
+10-10 20:02:22.460  2529  2529 D AndroidRuntime: Calling main entry com.android.commands.input.Input
+10-10 20:02:22.513  2529  2529 D AndroidRuntime: Shutting down VM
+10-10 20:02:24.490   513  1574 W NotificationService: Toast already killed. pkg=ua.calmalarm.app token=android.os.BinderProxy@10ddc9c
+10-10 20:02:31.491  2547  2547 D AndroidRuntime: >>>>>> START com.android.internal.os.RuntimeInit uid 2000 <<<<<<
+10-10 20:02:31.494  2547  2547 I AndroidRuntime: Using default boot image
+10-10 20:02:31.495  2547  2547 I AndroidRuntime: Leaving lock profiling enabled
+10-10 20:02:31.667  2547  2547 D AndroidRuntime: Calling main entry com.android.commands.uiautomator.Launcher
+10-10 20:02:32.817  2547  2547 D AndroidRuntime: Shutting down VM
+10-10 20:02:33.306  2565  2565 D AndroidRuntime: >>>>>> START com.android.internal.os.RuntimeInit uid 2000 <<<<<<
+10-10 20:02:33.308  2565  2565 I AndroidRuntime: Using default boot image
+10-10 20:02:33.308  2565  2565 I AndroidRuntime: Leaving lock profiling enabled
+10-10 20:02:33.371  2565  2565 D AndroidRuntime: Calling main entry com.android.commands.uiautomator.Launcher
+10-10 20:02:34.413  2565  2565 D AndroidRuntime: Shutting down VM
+10-10 20:02:34.887  2583  2583 D AndroidRuntime: >>>>>> START com.android.internal.os.RuntimeInit uid 2000 <<<<<<
+10-10 20:02:34.888  2583  2583 I AndroidRuntime: Using default boot image
+10-10 20:02:34.888  2583  2583 I AndroidRuntime: Leaving lock profiling enabled
+10-10 20:02:34.951  2583  2583 D AndroidRuntime: Calling main entry com.android.commands.input.Input
+10-10 20:02:34.971  2583  2583 D AndroidRuntime: Shutting down VM
+10-10 20:02:38.919  2600  2600 D AndroidRuntime: >>>>>> START com.android.internal.os.RuntimeInit uid 2000 <<<<<<
+10-10 20:02:38.922  2600  2600 I AndroidRuntime: Using default boot image
+10-10 20:02:38.922  2600  2600 I AndroidRuntime: Leaving lock profiling enabled
+10-10 20:02:39.096  2600  2600 D AndroidRuntime: Calling main entry com.android.commands.input.Input
+10-10 20:02:39.124  2600  2600 D AndroidRuntime: Shutting down VM
+10-10 20:02:41.614  2613  2613 D AndroidRuntime: >>>>>> START com.android.internal.os.RuntimeInit uid 2000 <<<<<<
+10-10 20:02:41.616  2613  2613 I AndroidRuntime: Using default boot image
+10-10 20:02:41.616  2613  2613 I AndroidRuntime: Leaving lock profiling enabled
+10-10 20:02:41.680  2613  2613 D AndroidRuntime: Calling main entry com.android.commands.uiautomator.Launcher
+10-10 20:02:42.744  2613  2613 D AndroidRuntime: Shutting down VM
+10-10 20:02:43.237  2631  2631 D AndroidRuntime: >>>>>> START com.android.internal.os.RuntimeInit uid 2000 <<<<<<
+10-10 20:02:43.239  2631  2631 I AndroidRuntime: Using default boot image
+10-10 20:02:43.239  2631  2631 I AndroidRuntime: Leaving lock profiling enabled
+10-10 20:02:43.303  2631  2631 D AndroidRuntime: Calling main entry com.android.commands.input.Input
+10-10 20:02:43.316  2631  2631 D AndroidRuntime: Shutting down VM
+10-10 20:02:44.064  2423  2435 I a.calmalarm.ap: Background young concurrent copying GC freed 87351(3677KB) AllocSpace objects, 27(1548KB) LOS objects, 0% free, 16MB/16MB, paused 85us total 118.045ms
+10-10 20:02:44.153  2423  2434 I a.calmalarm.ap: Compiler allocated 5010KB to compile void ua.calmalarm.app.ChanceTabKt.ChanceTab(ua.calmalarm.app.Region, kotlin.jvm.functions.Function0, androidx.compose.runtime.Composer, int)
+10-10 20:02:44.167  2423  2435 I a.calmalarm.ap: Background concurrent copying GC freed 69717(4202KB) AllocSpace objects, 155(7476KB) LOS objects, 49% free, 5701KB/11MB, paused 47us total 100.988ms
+10-10 20:02:59.022   513  2656 I PackageDexOptimizer: Running dexopt (dexoptNeeded=1) on: /data/app/~~KZKpktQfGXo3svstKZ1qSg==/ua.calmalarm.app-wJVxGXlVeAyG8s0LYWqIIw==/base.apk pkg=ua.calmalarm.app isa=x86_64 dexoptFlags=boot_complete,debuggable,public,enable_hidden_api_checks targetFilter=verify oatDir=/data/app/~~KZKpktQfGXo3svstKZ1qSg==/ua.calmalarm.app-wJVxGXlVeAyG8s0LYWqIIw==/oat classLoaderContext=PCL[]{}
+10-10 20:02:59.025   418  1406 V installd: DexInv: --- BEGIN '/data/app/~~KZKpktQfGXo3svstKZ1qSg==/ua.calmalarm.app-wJVxGXlVeAyG8s0LYWqIIw==/base.apk' ---
+10-10 20:02:59.106  2657  2657 I dex2oat32: /apex/com.android.art/bin/dex2oat32 --input-vdex-fd=-1 --output-vdex-fd=9 --updatable-bcp-packages-file=/system/etc/updatable-bcp-packages.txt --resolve-startup-const-strings=true --max-image-block-size=524288 --compiler-filter=verify --debuggable --classpath-dir=/data/app/~~KZKpktQfGXo3svstKZ1qSg==/ua.calmalarm.app-wJVxGXlVeAyG8s0LYWqIIw== --class-loader-context=PCL[]{} --generate-mini-debug-info --compact-dex-level=none --compilation-reason=boot
+10-10 20:02:59.924  2657  2657 I chatty  : uid=50130(ua.calmalarm.app) /apex/com.android.art/bin/dex2oat32 identical 1 line
+10-10 20:03:00.225   418  1406 V installd: DexInv: --- END '/data/app/~~KZKpktQfGXo3svstKZ1qSg==/ua.calmalarm.app-wJVxGXlVeAyG8s0LYWqIIw==/base.apk' (success) ---
+10-10 20:03:00.410   513  2656 I BackgroundDexOptService: Pinning optimized code {ua.calmalarm.app, android}
+10-10 20:03:00.410   513  2656 D IorapForwardingService: onPackagesUpdated: ua.calmalarm.app
+10-10 20:03:09.145  2672  2672 D AndroidRuntime: >>>>>> START com.android.internal.os.RuntimeInit uid 2000 <<<<<<
+10-10 20:03:09.148  2672  2672 I AndroidRuntime: Using default boot image
+10-10 20:03:09.148  2672  2672 I AndroidRuntime: Leaving lock profiling enabled
+10-10 20:03:09.309  2672  2672 D AndroidRuntime: Calling main entry com.android.commands.uiautomator.Launcher
+10-10 20:03:10.416  2672  2672 D AndroidRuntime: Shutting down VM
+10-10 20:03:10.887  2690  2690 D AndroidRuntime: >>>>>> START com.android.internal.os.RuntimeInit uid 2000 <<<<<<
+10-10 20:03:10.889  2690  2690 I AndroidRuntime: Using default boot image
+10-10 20:03:10.889  2690  2690 I AndroidRuntime: Leaving lock profiling enabled
+10-10 20:03:10.954  2690  2690 D AndroidRuntime: Calling main entry com.android.commands.input.Input
+10-10 20:03:11.372  2690  2690 D AndroidRuntime: Shutting down VM
+10-10 20:03:12.841  2703  2703 D AndroidRuntime: >>>>>> START com.android.internal.os.RuntimeInit uid 2000 <<<<<<
+10-10 20:03:12.843  2703  2703 I AndroidRuntime: Using default boot image
+10-10 20:03:12.843  2703  2703 I AndroidRuntime: Leaving lock profiling enabled
+10-10 20:03:12.907  2703  2703 D AndroidRuntime: Calling main entry com.android.commands.uiautomator.Launcher
+10-10 20:03:13.944  2703  2703 D AndroidRuntime: Shutting down VM
+10-10 20:03:14.413  2721  2721 D AndroidRuntime: >>>>>> START com.android.internal.os.RuntimeInit uid 2000 <<<<<<
+10-10 20:03:14.414  2721  2721 I AndroidRuntime: Using default boot image
+10-10 20:03:14.414  2721  2721 I AndroidRuntime: Leaving lock profiling enabled
+10-10 20:03:14.479  2721  2721 D AndroidRuntime: Calling main entry com.android.commands.input.Input
+10-10 20:03:14.486  2721  2721 D AndroidRuntime: Shutting down VM
+10-10 20:03:16.956  2734  2734 D AndroidRuntime: >>>>>> START com.android.internal.os.RuntimeInit uid 2000 <<<<<<
+10-10 20:03:16.958  2734  2734 I AndroidRuntime: Using default boot image
+10-10 20:03:16.958  2734  2734 I AndroidRuntime: Leaving lock profiling enabled
+10-10 20:03:17.024  2734  2734 D AndroidRuntime: Calling main entry com.android.commands.input.Input
+10-10 20:03:17.447  2734  2734 D AndroidRuntime: Shutting down VM
+10-10 20:03:19.295  2751  2751 D AndroidRuntime: >>>>>> START com.android.internal.os.RuntimeInit uid 2000 <<<<<<
+10-10 20:03:19.298  2751  2751 I AndroidRuntime: Using default boot image
+10-10 20:03:19.298  2751  2751 I AndroidRuntime: Leaving lock profiling enabled
+10-10 20:03:19.460  2751  2751 D AndroidRuntime: Calling main entry com.android.commands.uiautomator.Launcher
+10-10 20:03:20.560  2751  2751 D AndroidRuntime: Shutting down VM
+10-10 20:03:21.032  2769  2769 D AndroidRuntime: >>>>>> START com.android.internal.os.RuntimeInit uid 2000 <<<<<<
+10-10 20:03:21.033  2769  2769 I AndroidRuntime: Using default boot image
+10-10 20:03:21.033  2769  2769 I AndroidRuntime: Leaving lock profiling enabled
+10-10 20:03:21.102  2769  2769 D AndroidRuntime: Calling main entry com.android.commands.input.Input
+10-10 20:03:21.118  2769  2769 D AndroidRuntime: Shutting down VM
+10-10 20:03:23.941  2786  2786 D AndroidRuntime: >>>>>> START com.android.internal.os.RuntimeInit uid 2000 <<<<<<
+10-10 20:03:23.944  2786  2786 I AndroidRuntime: Using default boot image
+10-10 20:03:23.944  2786  2786 I AndroidRuntime: Leaving lock profiling enabled
+10-10 20:03:24.114  2786  2786 D AndroidRuntime: Calling main entry com.android.commands.uiautomator.Launcher
+10-10 20:03:25.240  2786  2786 D AndroidRuntime: Shutting down VM
+10-10 20:03:25.711  2805  2805 D AndroidRuntime: >>>>>> START com.android.internal.os.RuntimeInit uid 2000 <<<<<<
+10-10 20:03:25.713  2805  2805 I AndroidRuntime: Using default boot image
+10-10 20:03:25.713  2805  2805 I AndroidRuntime: Leaving lock profiling enabled
+10-10 20:03:25.778  2805  2805 D AndroidRuntime: Calling main entry com.android.commands.input.Input
+10-10 20:03:25.795  2805  2805 D AndroidRuntime: Shutting down VM
+10-10 20:03:28.256  2818  2818 D AndroidRuntime: >>>>>> START com.android.internal.os.RuntimeInit uid 2000 <<<<<<
+10-10 20:03:28.258  2818  2818 I AndroidRuntime: Using default boot image
+10-10 20:03:28.258  2818  2818 I AndroidRuntime: Leaving lock profiling enabled
+10-10 20:03:28.320  2818  2818 D AndroidRuntime: Calling main entry com.android.commands.input.Input
+10-10 20:03:28.834  2818  2818 D AndroidRuntime: Shutting down VM
+10-10 20:03:30.320  2831  2831 D AndroidRuntime: >>>>>> START com.android.internal.os.RuntimeInit uid 2000 <<<<<<
+10-10 20:03:30.322  2831  2831 I AndroidRuntime: Using default boot image
+10-10 20:03:30.322  2831  2831 I AndroidRuntime: Leaving lock profiling enabled
+10-10 20:03:30.383  2831  2831 D AndroidRuntime: Calling main entry com.android.commands.uiautomator.Launcher
+10-10 20:03:31.436  2831  2831 D AndroidRuntime: Shutting down VM
+10-10 20:03:31.913  2849  2849 D AndroidRuntime: >>>>>> START com.android.internal.os.RuntimeInit uid 2000 <<<<<<
+10-10 20:03:31.915  2849  2849 I AndroidRuntime: Using default boot image
+10-10 20:03:31.915  2849  2849 I AndroidRuntime: Leaving lock profiling enabled
+10-10 20:03:31.977  2849  2849 D AndroidRuntime: Calling main entry com.android.commands.input.Input
+10-10 20:03:31.986  2849  2849 D AndroidRuntime: Shutting down VM
+10-10 20:03:40.852  2867  2867 D AndroidRuntime: >>>>>> START com.android.internal.os.RuntimeInit uid 2000 <<<<<<
+10-10 20:03:40.855  2867  2867 I AndroidRuntime: Using default boot image
+10-10 20:03:40.855  2867  2867 I AndroidRuntime: Leaving lock profiling enabled
+10-10 20:03:41.015  2867  2867 D AndroidRuntime: Calling main entry com.android.commands.uiautomator.Launcher
+10-10 20:03:42.181  2867  2867 D AndroidRuntime: Shutting down VM
+10-10 20:03:42.660  2885  2885 D AndroidRuntime: >>>>>> START com.android.internal.os.RuntimeInit uid 2000 <<<<<<
+10-10 20:03:42.661  2885  2885 I AndroidRuntime: Using default boot image
+10-10 20:03:42.661  2885  2885 I AndroidRuntime: Leaving lock profiling enabled
+10-10 20:03:42.727  2885  2885 D AndroidRuntime: Calling main entry com.android.commands.input.Input
+10-10 20:03:42.746  2885  2885 D AndroidRuntime: Shutting down VM
+10-10 20:03:44.216  2899  2899 D AndroidRuntime: >>>>>> START com.android.internal.os.RuntimeInit uid 2000 <<<<<<
+10-10 20:03:44.218  2899  2899 I AndroidRuntime: Using default boot image
+10-10 20:03:44.218  2899  2899 I AndroidRuntime: Leaving lock profiling enabled
+10-10 20:03:44.283  2899  2899 D AndroidRuntime: Calling main entry com.android.commands.uiautomator.Launcher
+10-10 20:03:45.324  2899  2899 D AndroidRuntime: Shutting down VM
+10-10 20:03:45.792  2917  2917 D AndroidRuntime: >>>>>> START com.android.internal.os.RuntimeInit uid 2000 <<<<<<
+10-10 20:03:45.793  2917  2917 I AndroidRuntime: Using default boot image
+10-10 20:03:45.793  2917  2917 I AndroidRuntime: Leaving lock profiling enabled
+10-10 20:03:45.858  2917  2917 D AndroidRuntime: Calling main entry com.android.commands.input.Input
+10-10 20:03:45.866  2917  2917 D AndroidRuntime: Shutting down VM
+10-10 20:03:47.340  2931  2931 D AndroidRuntime: >>>>>> START com.android.internal.os.RuntimeInit uid 2000 <<<<<<
+10-10 20:03:47.342  2931  2931 I AndroidRuntime: Using default boot image
+10-10 20:03:47.342  2931  2931 I AndroidRuntime: Leaving lock profiling enabled
+10-10 20:03:47.402  2931  2931 D AndroidRuntime: Calling main entry com.android.commands.uiautomator.Launcher
+10-10 20:03:48.430  2931  2931 D AndroidRuntime: Shutting down VM
+10-10 20:03:48.899  2949  2949 D AndroidRuntime: >>>>>> START com.android.internal.os.RuntimeInit uid 2000 <<<<<<
+10-10 20:03:48.900  2949  2949 I AndroidRuntime: Using default boot image
+10-10 20:03:48.900  2949  2949 I AndroidRuntime: Leaving lock profiling enabled
+10-10 20:03:48.963  2949  2949 D AndroidRuntime: Calling main entry com.android.commands.input.Input
+10-10 20:03:48.970  2949  2949 D AndroidRuntime: Shutting down VM
+10-10 20:03:51.473  2964  2964 D AndroidRuntime: >>>>>> START com.android.internal.os.RuntimeInit uid 2000 <<<<<<
+10-10 20:03:51.474  2964  2964 I AndroidRuntime: Using default boot image
+10-10 20:03:51.474  2964  2964 I AndroidRuntime: Leaving lock profiling enabled
+10-10 20:03:51.540  2964  2964 D AndroidRuntime: Calling main entry com.android.commands.uiautomator.Launcher
+10-10 20:03:52.575  2964  2964 D AndroidRuntime: Shutting down VM
+10-10 20:03:53.045  2982  2982 D AndroidRuntime: >>>>>> START com.android.internal.os.RuntimeInit uid 2000 <<<<<<
+10-10 20:03:53.047  2982  2982 I AndroidRuntime: Using default boot image
+10-10 20:03:53.047  2982  2982 I AndroidRuntime: Leaving lock profiling enabled
+10-10 20:03:53.107  2982  2982 D AndroidRuntime: Calling main entry com.android.commands.input.Input
+10-10 20:03:53.115  2982  2982 D AndroidRuntime: Shutting down VM
+10-10 20:03:56.945  2999  2999 D AndroidRuntime: >>>>>> START com.android.internal.os.RuntimeInit uid 2000 <<<<<<
+10-10 20:03:56.948  2999  2999 I AndroidRuntime: Using default boot image
+10-10 20:03:56.948  2999  2999 I AndroidRuntime: Leaving lock profiling enabled
+10-10 20:03:57.113  2999  2999 D AndroidRuntime: Calling main entry com.android.commands.input.Input
+10-10 20:03:57.877  2999  2999 D AndroidRuntime: Shutting down VM
+10-10 20:03:59.691  3016  3016 D AndroidRuntime: >>>>>> START com.android.internal.os.RuntimeInit uid 2000 <<<<<<
+10-10 20:03:59.694  3016  3016 I AndroidRuntime: Using default boot image
+10-10 20:03:59.694  3016  3016 I AndroidRuntime: Leaving lock profiling enabled
+10-10 20:03:59.856  3016  3016 D AndroidRuntime: Calling main entry com.android.commands.input.Input
+10-10 20:04:00.438  3016  3016 D AndroidRuntime: Shutting down VM
+10-10 20:04:02.327  3033  3033 D AndroidRuntime: >>>>>> START com.android.internal.os.RuntimeInit uid 2000 <<<<<<
+10-10 20:04:02.329  3033  3033 I AndroidRuntime: Using default boot image
+10-10 20:04:02.329  3033  3033 I AndroidRuntime: Leaving lock profiling enabled
+10-10 20:04:02.490  3033  3033 D AndroidRuntime: Calling main entry com.android.commands.uiautomator.Launcher
+10-10 20:04:03.678  3033  3033 D AndroidRuntime: Shutting down VM
+10-10 20:04:04.170  3051  3051 D AndroidRuntime: >>>>>> START com.android.internal.os.RuntimeInit uid 2000 <<<<<<
+10-10 20:04:04.172  3051  3051 I AndroidRuntime: Using default boot image
+10-10 20:04:04.172  3051  3051 I AndroidRuntime: Leaving lock profiling enabled
+10-10 20:04:04.241  3051  3051 D AndroidRuntime: Calling main entry com.android.commands.input.Input
+10-10 20:04:04.337  3051  3051 D AndroidRuntime: Shutting down VM
+10-10 20:04:06.348   513  2280 W NotificationService: Toast already killed. pkg=ua.calmalarm.app token=android.os.BinderProxy@adb4b3d
+10-10 20:04:09.537   513  2280 I ActivityManager: Force stopping ua.calmalarm.app appid=10130 user=0: from pid 3074
+10-10 20:04:09.538   513  2280 I ActivityManager: Killing 2423:ua.calmalarm.app/u0a130 (adj 0): stop ua.calmalarm.app due to from pid 3074
+10-10 20:04:09.585   513   616 W InputDispatcher: channel 'bc224e7 ua.calmalarm.app/ua.calmalarm.app.MainActivity (server)' ~ Consumer closed input channel or an error occurred.  events=0x9
+10-10 20:04:09.585   513   616 E InputDispatcher: channel 'bc224e7 ua.calmalarm.app/ua.calmalarm.app.MainActivity (server)' ~ Channel is unrecoverably broken and will be disposed!
+10-10 20:04:09.588   513  2280 W ActivityTaskManager: Force removing ActivityRecord{207e322 u0 ua.calmalarm.app/.MainActivity t9 f}}: app died, no saved state
+10-10 20:04:09.610   513  2280 W InputDispatcher: Attempted to unregister already unregistered input channel 'bc224e7 ua.calmalarm.app/ua.calmalarm.app.MainActivity (server)'
+10-10 20:04:10.436   513   808 I ActivityTaskManager: START u0 {flg=0x10000000 cmp=ua.calmalarm.app/.MainActivity} from uid 2000
+10-10 20:04:10.698   513   555 I ActivityManager: Start proc 3097:ua.calmalarm.app/u0a130 for pre-top-activity {ua.calmalarm.app/ua.calmalarm.app.MainActivity}
+10-10 20:04:10.835  3097  3097 I a.calmalarm.ap: Late-enabling -Xcheck:jni
+10-10 20:04:10.906  3097  3097 I a.calmalarm.ap: Unquickening 12 vdex files!
+10-10 20:04:10.909  3097  3097 W a.calmalarm.ap: Unexpected CPU variant for X86 using defaults: x86_64
+10-10 20:04:11.383  3097  3097 W a.calmalarm.ap: Class androidx.compose.runtime.snapshots.SnapshotStateList failed lock verification and will run slower.
+10-10 20:04:11.383  3097  3097 W a.calmalarm.ap: Common causes for lock verification issues are non-optimized dex code
+10-10 20:04:11.383  3097  3097 W a.calmalarm.ap: and incorrect proguard optimizations.
+10-10 20:04:12.370   513   553 D ArtManagerInternalImpl: /data/misc/iorapd/ua.calmalarm.app/1/ua.calmalarm.app.MainActivity/compiled_traces/compiled_trace.pb doesn't exist
+10-10 20:04:12.377   513   553 I ActivityTaskManager: Displayed ua.calmalarm.app/.MainActivity: +1s913ms
+10-10 20:04:15.494   419  3093 I iorapd  : Perfetto TraceBuffer saved to file: /data/misc/iorapd/ua.calmalarm.app/1/ua.calmalarm.app.MainActivity/raw_traces/1791651855493989828.perfetto_trace.pb
+10-10 20:04:16.443  3097  3131 D ProfileInstaller: Installing profile for ua.calmalarm.app
+10-10 20:04:16.989  3139  3139 D AndroidRuntime: >>>>>> START com.android.internal.os.RuntimeInit uid 2000 <<<<<<
+10-10 20:04:16.992  3139  3139 I AndroidRuntime: Using default boot image
+10-10 20:04:16.992  3139  3139 I AndroidRuntime: Leaving lock profiling enabled
+10-10 20:04:17.150  3139  3139 D AndroidRuntime: Calling main entry com.android.commands.input.Input
+10-10 20:04:17.163  3139  3139 D AndroidRuntime: Shutting down VM
+10-10 20:06:00.732   513   513 D NotificationService: 0|ua.calmalarm.app|1001|null|10130: granting content://settings/system/notification_sound
+10-10 20:06:00.733   513   513 D NotificationService: 0|ua.calmalarm.app|1001|null|10130: granting content://settings/system/notification_sound
+10-10 20:06:00.740   736   736 D InterruptionStateProvider: No bubble up: not allowed to bubble: 0|ua.calmalarm.app|1001|null|10130
+10-10 20:06:00.740   736   736 D InterruptionStateProvider: No heads up: unimportant notification: 0|ua.calmalarm.app|1001|null|10130
+10-10 20:06:37.593   513   808 I ActivityTaskManager: START u0 {flg=0x10000000 cmp=ua.calmalarm.app/.MainActivity} from uid 2000
+10-10 20:06:38.665   513   553 D ArtManagerInternalImpl: /data/misc/iorapd/ua.calmalarm.app/1/ua.calmalarm.app.MainActivity/compiled_traces/compiled_trace.pb doesn't exist
+10-10 20:06:42.253  3200  3200 D AndroidRuntime: >>>>>> START com.android.internal.os.RuntimeInit uid 2000 <<<<<<
+10-10 20:06:42.255  3200  3200 I AndroidRuntime: Using default boot image
+10-10 20:06:42.255  3200  3200 I AndroidRuntime: Leaving lock profiling enabled
+10-10 20:06:42.417  3200  3200 D AndroidRuntime: Calling main entry com.android.commands.input.Input
+10-10 20:06:42.431  3200  3200 D AndroidRuntime: Shutting down VM
+10-10 20:06:45.638   513   808 I ActivityManager: Killing 3097:ua.calmalarm.app/u0a130 (adj 700): kill background
+10-10 20:06:45.679   513   808 I WindowManager: WIN DEATH: Window{31039b9 u0 ua.calmalarm.app/ua.calmalarm.app.MainActivity}
+10-10 20:06:45.679   513   808 W InputDispatcher: Attempted to unregister already unregistered input channel '31039b9 ua.calmalarm.app/ua.calmalarm.app.MainActivity (server)'
+10-10 20:07:00.106   513   555 I ActivityManager: Start proc 3233:ua.calmalarm.app/u0a130 for broadcast {ua.calmalarm.app/ua.calmalarm.app.AlarmReceiver}
+10-10 20:07:00.116  3233  3233 I a.calmalarm.ap: Late-enabling -Xcheck:jni
+10-10 20:07:00.223  3233  3233 I a.calmalarm.ap: Unquickening 12 vdex files!
+10-10 20:07:00.226  3233  3233 W a.calmalarm.ap: Unexpected CPU variant for X86 using defaults: x86_64
+10-10 20:07:00.891   513  3225 W ActivityManager: Foreground service started from background can not have location/camera/microphone access: service ua.calmalarm.app/.RingService
+10-10 20:07:00.996   513  3225 I ActivityTaskManager: START u0 {flg=0x10040000 cmp=ua.calmalarm.app/.RingActivity (has extras)} from uid 10130
+10-10 20:07:00.998   513  3225 W ActivityTaskManager: Background activity start [callingPackage: ua.calmalarm.app; callingUid: 10130; isCallingUidForeground: false; callingUidHasAnyVisibleWindow: false; callingUidProcState: FOREGROUND_SERVICE; isCallingUidPersistentSystemProcess: false; realCallingUid: 10130; isRealCallingUidForeground: false; realCallingUidHasAnyVisibleWindow: false; realCallingUidProcState: FOREGROUND_SERVICE; isRealCallingUidPersistentSystemProcess: false; originatingPendingIntent: null; isBgStartWhitelisted: false; intent: Intent { flg=0x10040000 cmp=ua.calmalarm.app/.RingActivity (has extras) }; callerApp: ProcessRecord{346e4c5 3233:ua.calmalarm.app/u0a130}]
+10-10 20:07:01.105   736   736 D InterruptionStateProvider: No bubble up: not allowed to bubble: 0|ua.calmalarm.app|1|null|10130
+10-10 20:07:01.118   736   736 W NotifBindPipeline: Row is not set so pipeline will not run. notif = 0|ua.calmalarm.app|1|null|10130
+10-10 20:07:05.814  3233  3281 D ProfileInstaller: Installing profile for ua.calmalarm.app
+10-10 20:08:06.569  3288  3288 D AndroidRuntime: >>>>>> START com.android.internal.os.RuntimeInit uid 2000 <<<<<<
+10-10 20:08:06.572  3288  3288 I AndroidRuntime: Using default boot image
+10-10 20:08:06.572  3288  3288 I AndroidRuntime: Leaving lock profiling enabled
+10-10 20:08:06.741  3288  3288 D AndroidRuntime: Calling main entry com.android.commands.uiautomator.Launcher
+10-10 20:08:07.957  3288  3288 D AndroidRuntime: Shutting down VM
+10-10 20:08:08.575  3312  3312 D AndroidRuntime: >>>>>> START com.android.internal.os.RuntimeInit uid 2000 <<<<<<
+10-10 20:08:08.582  3312  3312 I AndroidRuntime: Using default boot image
+10-10 20:08:08.582  3312  3312 I AndroidRuntime: Leaving lock profiling enabled
+10-10 20:08:08.646  3312  3312 D AndroidRuntime: Calling main entry com.android.commands.uiautomator.Launcher
+10-10 20:08:09.684  3312  3312 D AndroidRuntime: Shutting down VM
+10-10 20:08:13.981  3338  3338 D AndroidRuntime: >>>>>> START com.android.internal.os.RuntimeInit uid 2000 <<<<<<
+10-10 20:08:13.984  3338  3338 I AndroidRuntime: Using default boot image
+10-10 20:08:13.984  3338  3338 I AndroidRuntime: Leaving lock profiling enabled
+10-10 20:08:14.250  3338  3338 D AndroidRuntime: Calling main entry com.android.commands.input.Input
+10-10 20:08:14.257  3338  3338 D AndroidRuntime: Shutting down VM
+10-10 20:08:14.858  3357  3357 D AndroidRuntime: >>>>>> START com.android.internal.os.RuntimeInit uid 2000 <<<<<<
+10-10 20:08:14.862  3357  3357 I AndroidRuntime: Using default boot image
+10-10 20:08:14.862  3357  3357 I AndroidRuntime: Leaving lock profiling enabled
+10-10 20:08:14.921  3357  3357 D AndroidRuntime: Calling main entry com.android.commands.svc.Svc
+10-10 20:08:14.924  3357  3357 D AndroidRuntime: Shutting down VM
+10-10 20:08:15.389  3371  3371 D AndroidRuntime: >>>>>> START com.android.internal.os.RuntimeInit uid 2000 <<<<<<
+10-10 20:08:15.391  3371  3371 I AndroidRuntime: Using default boot image
+10-10 20:08:15.391  3371  3371 I AndroidRuntime: Leaving lock profiling enabled
+10-10 20:08:15.475  3371  3371 D AndroidRuntime: Calling main entry com.android.commands.input.Input
+10-10 20:08:15.536  3371  3371 D AndroidRuntime: Shutting down VM
+10-10 20:08:15.719   513  2051 I ActivityTaskManager: START u0 {flg=0x10040000 cmp=ua.calmalarm.app/.RingActivity (has extras)} from uid 10130
+10-10 20:08:17.168   513   513 D NotificationService: 0|ua.calmalarm.app|1|null|10130: granting content://settings/system/notification_sound
+10-10 20:08:17.365  3233  3233 W a.calmalarm.ap: Class androidx.compose.runtime.snapshots.SnapshotStateList failed lock verification and will run slower.
+10-10 20:08:17.365  3233  3233 W a.calmalarm.ap: Common causes for lock verification issues are non-optimized dex code
+10-10 20:08:17.365  3233  3233 W a.calmalarm.ap: and incorrect proguard optimizations.
+10-10 20:08:17.168   513   513 D NotificationService: 0|ua.calmalarm.app|1|null|10130: granting content://settings/system/notification_sound
+10-10 20:11:00.203   513   808 I ActivityTaskManager: START u0 {flg=0x10040000 cmp=ua.calmalarm.app/.RingActivity (has extras)} from uid 10130
+10-10 20:11:00.441   736   736 D InterruptionStateProvider: No bubble up: not allowed to bubble: 0|ua.calmalarm.app|1|null|10130
+10-10 20:11:00.520   513   513 D NotificationService: 0|ua.calmalarm.app|1|null|10130: granting content://settings/system/notification_sound
+10-10 20:11:30.119  3413  3413 D AndroidRuntime: >>>>>> START com.android.internal.os.RuntimeInit uid 2000 <<<<<<
+10-10 20:11:30.122  3413  3413 I AndroidRuntime: Using default boot image
+10-10 20:11:30.122  3413  3413 I AndroidRuntime: Leaving lock profiling enabled
+10-10 20:11:30.436  3413  3413 D AndroidRuntime: Calling main entry com.android.commands.uiautomator.Launcher
+10-10 20:11:00.520   513   513 D NotificationService: 0|ua.calmalarm.app|1|null|10130: granting content://settings/system/notification_sound
+10-10 20:11:31.587  3413  3413 D AndroidRuntime: Shutting down VM
+10-10 20:11:32.293  3437  3437 D AndroidRuntime: >>>>>> START com.android.internal.os.RuntimeInit uid 2000 <<<<<<
+10-10 20:11:32.294  3437  3437 I AndroidRuntime: Using default boot image
+10-10 20:11:32.294  3437  3437 I AndroidRuntime: Leaving lock profiling enabled
+10-10 20:11:32.368  3437  3437 D AndroidRuntime: Calling main entry com.android.commands.uiautomator.Launcher
+10-10 20:11:33.418  3437  3437 D AndroidRuntime: Shutting down VM
+10-10 20:11:33.972  3456  3456 D AndroidRuntime: >>>>>> START com.android.internal.os.RuntimeInit uid 2000 <<<<<<
+10-10 20:11:33.978  3456  3456 I AndroidRuntime: Using default boot image
+10-10 20:11:33.978  3456  3456 I AndroidRuntime: Leaving lock profiling enabled
+10-10 20:11:34.057  3456  3456 D AndroidRuntime: Calling main entry com.android.commands.input.Input
+10-10 20:11:34.125  3456  3456 D AndroidRuntime: Shutting down VM
+10-10 20:11:34.279   513   615 W ActivityTaskManager: Duplicate finish request for r=ActivityRecord{db2f530 u0 ua.calmalarm.app/.RingActivity t11 f}}
+10-10 20:11:37.590  3474  3474 D AndroidRuntime: >>>>>> START com.android.internal.os.RuntimeInit uid 2000 <<<<<<
+10-10 20:11:37.593  3474  3474 I AndroidRuntime: Using default boot image
+10-10 20:11:37.593  3474  3474 I AndroidRuntime: Leaving lock profiling enabled
+10-10 20:11:37.754  3474  3474 D AndroidRuntime: Calling main entry com.android.commands.svc.Svc
+10-10 20:11:37.761  3474  3474 D AndroidRuntime: Shutting down VM
+10-10 20:11:38.223  3488  3488 D AndroidRuntime: >>>>>> START com.android.internal.os.RuntimeInit uid 2000 <<<<<<
+10-10 20:11:38.224  3488  3488 I AndroidRuntime: Using default boot image
+10-10 20:11:38.224  3488  3488 I AndroidRuntime: Leaving lock profiling enabled
+10-10 20:11:38.286  3488  3488 D AndroidRuntime: Calling main entry com.android.commands.input.Input
+10-10 20:11:38.290  3488  3488 D AndroidRuntime: Shutting down VM
+10-10 20:11:39.669   513  1734 I ActivityManager: Force stopping ua.calmalarm.app appid=10130 user=0: from pid 3515
+10-10 20:11:39.670   513  1734 I ActivityManager: Killing 3233:ua.calmalarm.app/u0a130 (adj 905): stop ua.calmalarm.app due to from pid 3515
+10-10 20:11:39.674   513  1734 I WindowManager:   Force finishing activity ActivityRecord{751a8fa u0 ua.calmalarm.app/.MainActivity t10}
+10-10 20:11:39.861   513   808 I ActivityTaskManager: START u0 {flg=0x10000000 cmp=ua.calmalarm.app/.MainActivity} from uid 2000
+10-10 20:11:40.327   513   555 I ActivityManager: Start proc 3528:ua.calmalarm.app/u0a130 for pre-top-activity {ua.calmalarm.app/ua.calmalarm.app.MainActivity}
+10-10 20:11:40.435  3528  3528 I a.calmalarm.ap: Late-enabling -Xcheck:jni
+10-10 20:11:40.468  3528  3528 I a.calmalarm.ap: Unquickening 12 vdex files!
+10-10 20:11:40.472  3528  3528 W a.calmalarm.ap: Unexpected CPU variant for X86 using defaults: x86_64
+10-10 20:11:41.141  3528  3528 W a.calmalarm.ap: Class androidx.compose.runtime.snapshots.SnapshotStateList failed lock verification and will run slower.
+10-10 20:11:41.141  3528  3528 W a.calmalarm.ap: Common causes for lock verification issues are non-optimized dex code
+10-10 20:11:41.141  3528  3528 W a.calmalarm.ap: and incorrect proguard optimizations.
+10-10 20:11:43.123   513   549 I WindowManager: Screen frozen for +4s337ms due to Window{aa5811d u0 ua.calmalarm.app/ua.calmalarm.app.MainActivity}
+10-10 20:11:43.153   513   553 D ArtManagerInternalImpl: /data/misc/iorapd/ua.calmalarm.app/1/ua.calmalarm.app.MainActivity/compiled_traces/compiled_trace.pb doesn't exist
+10-10 20:11:43.160   513   553 I ActivityTaskManager: Displayed ua.calmalarm.app/.MainActivity: +3s89ms
+10-10 20:11:45.142   419  3524 I iorapd  : Perfetto TraceBuffer saved to file: /data/misc/iorapd/ua.calmalarm.app/1/ua.calmalarm.app.MainActivity/raw_traces/1791652305141566353.perfetto_trace.pb
+10-10 20:11:46.393  3566  3566 D AndroidRuntime: >>>>>> START com.android.internal.os.RuntimeInit uid 2000 <<<<<<
+10-10 20:11:46.397  3566  3566 I AndroidRuntime: Using default boot image
+10-10 20:11:46.397  3566  3566 I AndroidRuntime: Leaving lock profiling enabled
+10-10 20:11:46.559  3566  3566 D AndroidRuntime: Calling main entry com.android.commands.uiautomator.Launcher
+10-10 20:11:46.733  3528  3581 D ProfileInstaller: Installing profile for ua.calmalarm.app
+10-10 20:11:47.832  3566  3566 D AndroidRuntime: Shutting down VM
+10-10 20:11:48.326  3585  3585 D AndroidRuntime: >>>>>> START com.android.internal.os.RuntimeInit uid 2000 <<<<<<
+10-10 20:11:48.327  3585  3585 I AndroidRuntime: Using default boot image
+10-10 20:11:48.327  3585  3585 I AndroidRuntime: Leaving lock profiling enabled
+10-10 20:11:48.393  3585  3585 D AndroidRuntime: Calling main entry com.android.commands.input.Input
+10-10 20:11:48.412  3585  3585 D AndroidRuntime: Shutting down VM
+10-10 20:11:49.180  3528  3541 I a.calmalarm.ap: Background concurrent copying GC freed 89284(4317KB) AllocSpace objects, 130(6396KB) LOS objects, 49% free, 7770KB/15MB, paused 270us total 109.091ms
