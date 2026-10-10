@@ -14,7 +14,7 @@ object Store {
     const val KEY_WAITING = "waiting"
     const val KEY_REGION = "region"
     private const val KEY_NEXT_ID = "next_id"
-    private const val KEY_REGIONS_CACHE = "regions_cache_v2"
+    private const val KEY_REGIONS_CACHE = "regions_cache_v3"
 
     fun prefs(ctx: Context): SharedPreferences =
         ctx.applicationContext.getSharedPreferences(PREFS, Context.MODE_PRIVATE)

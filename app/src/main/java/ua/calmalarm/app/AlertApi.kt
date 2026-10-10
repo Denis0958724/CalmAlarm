@@ -147,7 +147,7 @@ object AlertApi {
      * Чи є тривога саме у вибраному регіоні:
      * — місто: тривога на область, район міста або саме місто;
      * — район: тривога на область або на цей район;
-     * — «вся область»: тривога на область або хоча б в одному її районі.
+     * — «вся область»: тривога на область або хоча б в одному її районі чи місті.
      */
     fun statusFor(ctx: Context, snap: Snapshot, region: Region): RegionStatus {
         val now = System.currentTimeMillis()
@@ -155,10 +155,7 @@ object AlertApi {
         val wholeOblast = region.districtId == null && region.cityId == null
         val ids = setOfNotNull(region.oblastId, region.districtId, region.cityId)
         val hits = entries.filter { e ->
-            e.regionId in ids || (
-                wholeOblast && Regions.isDistrict(ctx, e.regionId) &&
-                    Regions.oblastOf(ctx, e.regionId) == region.oblastId
-                )
+            e.regionId in ids || (wholeOblast && Regions.oblastOf(ctx, e.regionId) == region.oblastId)
         }
         if (hits.isEmpty()) {
             val partial = entries.any { Regions.oblastOf(ctx, it.regionId) == region.oblastId }

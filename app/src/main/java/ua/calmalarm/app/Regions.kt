@@ -164,6 +164,12 @@ object Regions {
     /** Міста, для яких оголошують окремі тривоги (не лише разом із районом). */
     private val CITY_PREFIXES = listOf("м. Харків ", "м. Запоріжжя ", "м. Нікополь ", "м. Марганець ", "м. Краматорськ ")
 
+    /** Міста, які в джерелі записані окремим «регіоном» верхнього рівня: префікс → (область, район). */
+    private val TOP_LEVEL_CITIES = mapOf(
+        "м. Харків " to ("22" to "Харківський район"),
+        "м. Запоріжжя " to ("12" to "Запорізький район"),
+    )
+
     @Volatile
     private var districtsMem: Map<String, List<District>>? = null
 
@@ -220,9 +226,17 @@ object Regions {
         val states = JSONObject(body).getJSONArray("states")
         val o = JSONObject()
         val m = JSONObject()
+        val topCities = mutableListOf<Triple<String, String, Pair<String, String>>>()
         for (i in 0 until states.length()) {
             val s = states.getJSONObject(i)
             val sid = s.getString("regionId")
+            val sname = s.optString("regionName")
+            val top = TOP_LEVEL_CITIES.entries.firstOrNull { sname.startsWith(it.key) }
+            if (top != null) {
+                topCities += Triple(sid, sname, top.value)
+                continue
+            }
+            if (!byId.containsKey(sid)) continue
             val arr = JSONArray()
             val children = s.optJSONArray("regionChildIds") ?: JSONArray()
             for (j in 0 until children.length()) {
@@ -245,6 +259,17 @@ object Regions {
                 }
             }
             o.put(sid, arr)
+        }
+        for ((cid, cname, target) in topCities) {
+            val (oid, dname) = target
+            m.put(cid, oid)
+            val arr = o.optJSONArray(oid) ?: continue
+            for (k in 0 until arr.length()) {
+                val e = arr.getJSONArray(k)
+                if (e.getString(1) == dname) {
+                    (e.optJSONArray(2) ?: JSONArray().also { e.put(it) }).put(JSONArray().put(cid).put(cname))
+                }
+            }
         }
         val raw = JSONObject().put("o", o).put("m", m).toString()
         if (!applyCache(raw)) throw IllegalStateException("bad regions data")
