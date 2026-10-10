@@ -48,13 +48,13 @@ jobs:
           SDKM=$(ls $ANDROID_HOME/cmdline-tools/*/bin/sdkmanager | head -1)
           AVDM=$(dirname $SDKM)/avdmanager
           yes | $SDKM --licenses > /dev/null 2>&1 || true
-          $SDKM "emulator" "platform-tools" "system-images;android-33;google_apis;x86_64" > ci-out/sdkmanager.txt 2>&1
+          $SDKM "emulator" "platform-tools" "system-images;android-33;default;x86_64" > ci-out/sdkmanager.txt 2>&1
           $ANDROID_HOME/emulator/emulator -accel-check >> ci-out/env.txt 2>&1 || true
           $ANDROID_HOME/emulator/emulator -version | head -1 >> ci-out/env.txt 2>&1 || true
-          echo no | $AVDM create avd -f -n test -k "system-images;android-33;google_apis;x86_64" -d pixel_6 > ci-out/avd.txt 2>&1
-          printf 'hw.ramSize=4096\nhw.cpu.ncore=4\n' >> ~/.android/avd/test.avd/config.ini
+          echo no | $AVDM create avd -f -n test -k "system-images;android-33;default;x86_64" -d pixel_6 > ci-out/avd.txt 2>&1
+          $AVDM list avd >> ci-out/avd.txt 2>&1 || true
           nohup $ANDROID_HOME/emulator/emulator -avd test -no-window -gpu swiftshader_indirect -noaudio \
-            -no-boot-anim -no-snapshot -camera-back none -camera-front none -no-metrics \
+            -no-boot-anim -no-snapshot -camera-back none -camera-front none -memory 2048 -cores 2 -no-metrics \
             > ci-out/emulator.log 2>&1 &
           ADB=$ANDROID_HOME/platform-tools/adb
           timeout 600 $ADB wait-for-device || echo 'wait-for-device timed out' >> ci-out/env.txt
