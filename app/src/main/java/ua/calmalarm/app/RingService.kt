@@ -1,4 +1,4 @@
-package ua.vidbij.alarm
+package ua.calmalarm.app
 
 import android.app.Service
 import android.content.Intent
@@ -21,8 +21,8 @@ import kotlinx.coroutines.flow.StateFlow
 class RingService : Service() {
 
     companion object {
-        const val ACTION_STOP = "ua.vidbij.alarm.STOP"
-        const val ACTION_SNOOZE = "ua.vidbij.alarm.SNOOZE"
+        const val ACTION_STOP = "ua.calmalarm.app.STOP"
+        const val ACTION_SNOOZE = "ua.calmalarm.app.SNOOZE"
         const val EXTRA_NOTE = "note"
         const val EXTRA_TIME = "time"
         const val SNOOZE_MIN = 5
@@ -93,7 +93,7 @@ class RingService : Service() {
         try {
             ServiceCompat.startForeground(this, Notifs.ID_RING, notification, type)
         } catch (e: Exception) {
-            Log.e("Vidbij", "startForeground failed", e)
+            Log.e("CalmAlarm", "startForeground failed", e)
             alarm?.let { Notifs.showFallbackRing(this, it, note) }
             stopSelf()
             return START_NOT_STICKY
@@ -129,7 +129,7 @@ class RingService : Service() {
             mp.start()
             player = mp
         } catch (e: Exception) {
-            Log.e("Vidbij", "tone failed, using system alarm sound", e)
+            Log.e("CalmAlarm", "tone failed, using system alarm sound", e)
             mp.release()
             try {
                 val fallback = MediaPlayer()
@@ -140,7 +140,7 @@ class RingService : Service() {
                 fallback.start()
                 player = fallback
             } catch (e2: Exception) {
-                Log.e("Vidbij", "system alarm sound failed", e2)
+                Log.e("CalmAlarm", "system alarm sound failed", e2)
             }
         }
         handler.removeCallbacks(ramp)

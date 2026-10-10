@@ -1,4 +1,4 @@
-package ua.vidbij.alarm
+package ua.calmalarm.app
 
 import android.content.Context
 import android.content.SharedPreferences
@@ -7,7 +7,7 @@ import org.json.JSONObject
 
 /** Просте збереження всіх налаштувань у SharedPreferences. */
 object Store {
-    private const val PREFS = "vidbij"
+    private const val PREFS = "calmalarm"
     private val lock = Any()
 
     const val KEY_ALARMS = "alarms"

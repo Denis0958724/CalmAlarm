@@ -1,4 +1,4 @@
-package ua.vidbij.alarm
+package ua.calmalarm.app
 
 import android.content.Intent
 import android.os.Build
@@ -69,7 +69,7 @@ class RingActivity : ComponentActivity() {
         alarmId = i.getIntExtra(Scheduler.EXTRA_ID, -1)
         val note = i.getStringExtra(RingService.EXTRA_NOTE).orEmpty()
         setContent {
-            VidbijTheme(darkTheme = true) {
+            CalmAlarmTheme(darkTheme = true) {
                 BackHandler { /* щоб випадково не закрити — вибір лише кнопками */ }
                 var wasRinging by remember { mutableStateOf(false) }
                 LaunchedEffect(Unit) {

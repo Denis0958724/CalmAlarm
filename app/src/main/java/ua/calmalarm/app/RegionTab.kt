@@ -1,4 +1,4 @@
-package ua.vidbij.alarm
+package ua.calmalarm.app
 
 import android.widget.Toast
 import androidx.compose.foundation.clickable

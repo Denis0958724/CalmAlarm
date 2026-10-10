@@ -1,4 +1,4 @@
-package ua.vidbij.alarm
+package ua.calmalarm.app
 
 import org.json.JSONArray
 import org.json.JSONObject

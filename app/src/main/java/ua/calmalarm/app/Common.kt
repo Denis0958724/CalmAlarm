@@ -1,4 +1,4 @@
-package ua.vidbij.alarm
+package ua.calmalarm.app
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box

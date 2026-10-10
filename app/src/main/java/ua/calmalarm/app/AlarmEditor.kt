@@ -1,4 +1,4 @@
-package ua.vidbij.alarm
+package ua.calmalarm.app
 
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background

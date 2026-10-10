@@ -1,4 +1,4 @@
-package ua.vidbij.alarm
+package ua.calmalarm.app
 
 import android.content.BroadcastReceiver
 import android.content.Context
@@ -15,9 +15,9 @@ class AlarmReceiver : BroadcastReceiver() {
         if (id < 0 || action == null) return
         val pending = goAsync()
         val wl = ctx.getSystemService(PowerManager::class.java)
-            .newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, "vidbij:alarm")
+            .newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, "calmalarm:alarm")
         wl.acquire(20_000)
-        thread(name = "vidbij-alarm") {
+        thread(name = "calmalarm-alarm") {
             try {
                 when (action) {
                     Scheduler.ACTION_FIRE -> AlarmEngine.onFire(ctx, id, intent.getBooleanExtra(Scheduler.EXTRA_SNOOZE, false))
@@ -25,7 +25,7 @@ class AlarmReceiver : BroadcastReceiver() {
                     Scheduler.ACTION_CANCEL_WAIT -> AlarmEngine.cancelWait(ctx, id)
                 }
             } catch (e: Throwable) {
-                Log.e("Vidbij", "alarm handling failed", e)
+                Log.e("CalmAlarm", "alarm handling failed", e)
                 // Безпечний варіант: краще розбудити, ніж проспати.
                 if (action == Scheduler.ACTION_FIRE) {
                     Store.alarm(ctx, id)?.let { AlarmEngine.ring(ctx, it, "") }

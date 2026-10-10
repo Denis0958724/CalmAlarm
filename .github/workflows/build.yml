@@ -26,18 +26,18 @@ jobs:
           ./gradlew assembleRelease --stacktrace
 
       - name: Rename APK
-        run: cp app/build/outputs/apk/release/app-release.apk Vidbij.apk
+        run: cp app/build/outputs/apk/release/app-release.apk CalmAlarm.apk
 
       - uses: actions/upload-artifact@v4
         with:
-          name: Vidbij-apk
-          path: Vidbij.apk
+          name: CalmAlarm-apk
+          path: CalmAlarm.apk
 
       - name: Publish release
         if: github.ref == 'refs/heads/main'
         uses: softprops/action-gh-release@v2
         with:
           tag_name: v1.0.${{ github.run_number }}
-          name: Відбій v1.0.${{ github.run_number }}
-          body: Завантажте файл Vidbij.apk на телефон і відкрийте його, щоб встановити.
-          files: Vidbij.apk
+          name: CalmAlarm v1.0.${{ github.run_number }}
+          body: Завантажте файл CalmAlarm.apk на телефон і відкрийте його, щоб встановити.
+          files: CalmAlarm.apk

@@ -1,11 +1,11 @@
-package ua.vidbij.alarm
+package ua.calmalarm.app
 
 import java.io.IOException
 import java.net.HttpURLConnection
 import java.net.URL
 
 object Net {
-    const val APP_UA = "VidbijAlarm/1.0 (Android)"
+    const val APP_UA = "CalmAlarm/1.0 (Android)"
     const val BROWSER_UA =
         "Mozilla/5.0 (Linux; Android 14) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/126.0 Mobile Safari/537.36"
 

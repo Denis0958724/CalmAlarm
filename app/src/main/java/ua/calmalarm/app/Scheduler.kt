@@ -1,4 +1,4 @@
-package ua.vidbij.alarm
+package ua.calmalarm.app
 
 import android.app.AlarmManager
 import android.app.PendingIntent
@@ -8,9 +8,9 @@ import android.os.Build
 import java.time.ZonedDateTime
 
 object Scheduler {
-    const val ACTION_FIRE = "ua.vidbij.alarm.FIRE"
-    const val ACTION_CHECK = "ua.vidbij.alarm.CHECK"
-    const val ACTION_CANCEL_WAIT = "ua.vidbij.alarm.CANCEL_WAIT"
+    const val ACTION_FIRE = "ua.calmalarm.app.FIRE"
+    const val ACTION_CHECK = "ua.calmalarm.app.CHECK"
+    const val ACTION_CANCEL_WAIT = "ua.calmalarm.app.CANCEL_WAIT"
     const val EXTRA_ID = "id"
     const val EXTRA_SNOOZE = "snooze"
 

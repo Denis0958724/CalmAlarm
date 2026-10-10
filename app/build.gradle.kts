@@ -5,11 +5,11 @@ plugins {
 }
 
 android {
-    namespace = "ua.vidbij.alarm"
+    namespace = "ua.calmalarm.app"
     compileSdk = 35
 
     defaultConfig {
-        applicationId = "ua.vidbij.alarm"
+        applicationId = "ua.calmalarm.app"
         minSdk = 26
         targetSdk = 35
         versionCode = 1
@@ -19,9 +19,9 @@ android {
     signingConfigs {
         create("release") {
             storeFile = file("release.jks")
-            storePassword = "vidbij2026"
-            keyAlias = "vidbij"
-            keyPassword = "vidbij2026"
+            storePassword = "calmalarm2026"
+            keyAlias = "calmalarm"
+            keyPassword = "calmalarm2026"
         }
     }
 

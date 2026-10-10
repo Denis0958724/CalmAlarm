@@ -1,4 +1,4 @@
-package ua.vidbij.alarm
+package ua.calmalarm.app
 
 import android.content.Context
 import android.content.Intent
@@ -12,7 +12,7 @@ import java.time.ZonedDateTime
  * чекає відбою і дзвонить одразу після нього; якщо тривога триває довше за ліміт — не дзвонить.
  */
 object AlarmEngine {
-    private const val TAG = "Vidbij"
+    private const val TAG = "CalmAlarm"
     private const val CHECK_EVERY_MS = 60_000L
     private const val RETRY_NET_MS = 30_000L
 

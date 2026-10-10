@@ -22,7 +22,7 @@
         android:roundIcon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:supportsRtl="true"
-        android:theme="@style/Theme.Vidbij">
+        android:theme="@style/Theme.CalmAlarm">
 
         <activity
             android:name=".MainActivity"
@@ -42,7 +42,7 @@
             android:launchMode="singleInstance"
             android:showWhenLocked="true"
             android:taskAffinity=""
-            android:theme="@style/Theme.Vidbij.Ring"
+            android:theme="@style/Theme.CalmAlarm.Ring"
             android:turnScreenOn="true" />
 
         <receiver

@@ -1,4 +1,4 @@
-package ua.vidbij.alarm
+package ua.calmalarm.app
 
 import android.Manifest
 import android.content.Context
@@ -80,7 +80,7 @@ class MainActivity : ComponentActivity() {
         Notifs.ensureChannels(this)
         Scheduler.scheduleAll(this)
         setContent {
-            VidbijTheme {
+            CalmAlarmTheme {
                 AppRoot()
             }
         }
