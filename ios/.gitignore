@@ -5,3 +5,4 @@ CalmAlarm/CalmAlarm.entitlements
 Widgets/Info.plist
 build/
 *.log
+__pycache__/

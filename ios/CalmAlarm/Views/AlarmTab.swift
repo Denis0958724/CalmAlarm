@@ -69,6 +69,12 @@ struct AlarmTab: View {
             .accessibilityLabel("Додати будильник")
             .padding(20)
         }
+        .onAppear {
+            if AppModel.demo && UserDefaults.standard.bool(forKey: "demoEdit"), editing == nil {
+                editingIsNew = false
+                editing = model.alarms.first
+            }
+        }
         .sheet(item: $editing) { e in
             AlarmEditor(
                 initial: e,

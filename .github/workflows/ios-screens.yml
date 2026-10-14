@@ -1,0 +1,78 @@
+name: iOS - знімки екрана
+
+# Запускає застосунок у симуляторі iPhone 6,9" і робить знімки для App Store (гілка ios-screens).
+on:
+  workflow_dispatch:
+
+concurrency:
+  group: ios-screens
+  cancel-in-progress: true
+
+permissions:
+  contents: write
+
+jobs:
+  screens:
+    runs-on: macos-26
+    timeout-minutes: 40
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Зібрати для симулятора
+        working-directory: ios
+        env:
+          HOMEBREW_NO_AUTO_UPDATE: "1"
+        run: |
+          brew install xcodegen
+          xcodegen generate
+          xcodebuild build \
+            -project CalmAlarm.xcodeproj -scheme CalmAlarm -configuration Debug \
+            -destination 'generic/platform=iOS Simulator' -derivedDataPath build/dd \
+            CODE_SIGNING_ALLOWED=NO > build.log 2>&1 || { grep -E "error:" build.log | sort -u | head -40; exit 1; }
+
+      - name: Знімки
+        working-directory: ios
+        run: |
+          set -x
+          APP=build/dd/Build/Products/Debug-iphonesimulator/CalmAlarm.app
+          TYPE=$(xcrun simctl list devicetypes | grep -oE "iPhone 1[0-9] Pro Max" | sort -V | tail -1)
+          echo "Пристрій: $TYPE"
+          UDID=$(xcrun simctl create shots "$TYPE")
+          xcrun simctl boot "$UDID"
+          xcrun simctl bootstatus "$UDID" -b
+          xcrun simctl status_bar "$UDID" override --time "9:41" --batteryState charged --batteryLevel 100 --cellularBars 4 --wifiBars 3 || true
+          xcrun simctl install "$UDID" "$APP"
+          mkdir -p /tmp/shots
+          shot() {
+            name=$1; shift
+            xcrun simctl terminate "$UDID" ua.calmalarm.app 2>/dev/null || true
+            xcrun simctl launch "$UDID" ua.calmalarm.app "$@"
+            sleep "${WAIT:-6}"
+            xcrun simctl io "$UDID" screenshot "/tmp/shots/$name.png"
+          }
+          xcrun simctl ui "$UDID" appearance light
+          shot 1-waiting -demo YES -demoAlert YES -uiTab 0
+          shot 2-alarms -demo YES -uiTab 0
+          WAIT=25 shot 3-chance -demo YES -uiTab 1
+          shot 4-editor -demo YES -uiTab 0 -demoEdit YES
+          shot 5-region -demo YES -uiTab 2
+          xcrun simctl ui "$UDID" appearance dark
+          shot 6-dark -demo YES -demoAlert YES -uiTab 0
+          WAIT=25 shot 7-dark-chance -demo YES -uiTab 1
+          # Звичайний перший запуск (без демо) - перевірка, що застосунок не падає
+          xcrun simctl ui "$UDID" appearance light
+          WAIT=10 shot 8-first-run -uiTab 2
+          ls -la /tmp/shots
+
+      - name: Опублікувати в гілку ios-screens
+        if: always()
+        run: |
+          mkdir -p /tmp/shots && date > /tmp/shots/run.txt
+          git config user.name "ci"
+          git config user.email "ci@users.noreply.github.com"
+          git checkout --orphan ios-screens
+          git rm -rf --cached . > /dev/null
+          rm -rf shots && mkdir shots && cp /tmp/shots/* shots/
+          git add -f shots
+          git commit -q -m "iOS screenshots ${{ github.run_number }}"
+          git push -f origin ios-screens

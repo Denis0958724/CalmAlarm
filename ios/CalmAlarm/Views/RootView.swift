@@ -18,6 +18,9 @@ struct RootView: View {
         }
         .onAppear {
             if model.region == nil { tab = 2 }
+            if UserDefaults.standard.object(forKey: "uiTab") != nil {
+                tab = UserDefaults.standard.integer(forKey: "uiTab")
+            }
         }
         .overlay(alignment: .bottom) {
             if let t = model.toast {

@@ -43,10 +43,31 @@ final class AppModel: ObservableObject {
 
     private let defaults = UserDefaults.standard
 
+    /// Демо-режим для знімків екрана (запуск з аргументом -demo YES): без системних будильників і сервера.
+    static let demo = UserDefaults.standard.bool(forKey: "demo")
+    static let demoAlert = UserDefaults.standard.bool(forKey: "demoAlert")
+
     private init() {
+        if AppModel.demo {
+            seedDemo()
+            return
+        }
         load()
         authState = AlarmManager.shared.authorizationState
         pushToken = defaults.string(forKey: "push_token")
+    }
+
+    private func seedDemo() {
+        alarms = [
+            WakeAlarm(id: 1, hour: 7, minute: 0, days: WEEKDAYS),
+            WakeAlarm(id: 2, hour: 9, minute: 30, days: [6, 7], tone: 1, skipYellow: false, maxWaitMin: 90),
+            WakeAlarm(id: 3, hour: 6, minute: 15, days: [], enabled: false, tone: 3),
+        ]
+        region = Region(oblastId: "31", oblastName: "м. Київ")
+        authState = .authorized
+        if AppModel.demoAlert, let occ = Calendar.current.date(bySettingHour: 7, minute: 0, second: 0, of: Date()) {
+            waitings = [1: Waiting(alarmId: 1, occ: occ, deadline: occ.addingTimeInterval(7200), since: occ, level: .red)]
+        }
     }
 
     // MARK: - Збереження
@@ -59,6 +80,7 @@ final class AppModel: ObservableObject {
     }
 
     private func persist() {
+        if AppModel.demo { return }
         encode(alarms, "alarms_v1")
         encode(waitings, "waitings_v1")
         encode(kitIds, "kit_v1")
@@ -139,6 +161,13 @@ final class AppModel: ObservableObject {
     }
 
     func refreshStatus() async {
+        if AppModel.demo {
+            let since = Calendar.current.date(bySettingHour: 6, minute: 41, second: 0, of: Date())
+            status = AppModel.demoAlert
+                ? RegionStatus(active: true, level: .red, since: since, partial: false)
+                : RegionStatus(active: false, level: nil, since: nil, partial: false)
+            return
+        }
         guard let r = region else { return }
         if let s = await AlertAPI.currentStatus(r, timeout: 7) {
             status = s
@@ -205,6 +234,7 @@ final class AppModel: ObservableObject {
 
     /// Ставить системний будильник. nil - якщо не вдалося (немає дозволу тощо).
     private func scheduleKit(_ a: WakeAlarm, _ schedule: Alarm.Schedule, title: String) async -> UUID? {
+        if AppModel.demo { return nil }
         guard await ensureAuthorized() else { return nil }
         let id = UUID()
         let snoozeMin = max(SNOOZE_LOW, min(SNOOZE_HIGH, a.snoozeMin))
@@ -255,7 +285,7 @@ final class AppModel: ObservableObject {
     /// Викликається при відкритті застосунку, щохвилини поки він відкритий,
     /// після тихого сигналу від сервера і коли вимикають будильник.
     func reconcile(reason: String) async {
-        if busy { return }
+        if busy || AppModel.demo { return }
         busy = true
         defer { busy = false }
 
@@ -449,6 +479,7 @@ final class AppModel: ObservableObject {
 
     /// Надсилає серверу розклад будильників і регіон (з невеликою затримкою, щоб не смикати його на кожну зміну).
     func scheduleSync() {
+        if AppModel.demo { return }
         syncTask?.cancel()
         syncTask = Task {
             try? await Task.sleep(nanoseconds: 1_500_000_000)

@@ -52,15 +52,16 @@ jobs:
           grep -E "warning:" build.log | grep -v "appintentsmetadataprocessor" | sort -u | head -40 || true
           tail -3 build.log
 
-      - name: Опублікувати помилки в гілку ios-log
-        if: failure()
+      - name: Опублікувати журнал у гілку ios-log
+        if: always()
         run: |
           mkdir -p /tmp/out
           if [ -f ios/build.log ]; then
             grep -E "error:|error -|Error:" ios/build.log | sort -u > /tmp/out/errors.txt || true
-            tail -200 ios/build.log > /tmp/out/tail.txt
+            grep -E "warning:" ios/build.log | sort -u > /tmp/out/warnings.txt || true
+            tail -100 ios/build.log > /tmp/out/tail.txt
           fi
-          date > /tmp/out/run.txt
+          { date; xcodebuild -version; } > /tmp/out/run.txt
           git config user.name "ci"
           git config user.email "ci@users.noreply.github.com"
           git checkout --orphan ios-log
