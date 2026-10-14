@@ -6,14 +6,16 @@ plugins {
 
 android {
     namespace = "ua.calmalarm.app"
-    compileSdk = 35
+    compileSdk = 36
 
     defaultConfig {
         applicationId = "ua.calmalarm.app"
         minSdk = 26
-        targetSdk = 35
-        versionCode = 1
-        versionName = "1.0"
+        targetSdk = 36
+        // Кожна збірка на GitHub отримує новий номер версії, щоб оновлення ставилися поверх старих.
+        val build = (System.getenv("GITHUB_RUN_NUMBER") ?: "1").toInt()
+        versionCode = build
+        versionName = "1.0.$build"
     }
 
     signingConfigs {

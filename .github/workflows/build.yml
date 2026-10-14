@@ -25,15 +25,19 @@ jobs:
       - name: Build
         run: |
           chmod +x gradlew
-          ./gradlew assembleRelease --stacktrace
+          ./gradlew assembleRelease bundleRelease --stacktrace
 
       - name: Rename APK
-        run: cp app/build/outputs/apk/release/app-release.apk CalmAlarm.apk
+        run: |
+          cp app/build/outputs/apk/release/app-release.apk CalmAlarm.apk
+          cp app/build/outputs/bundle/release/app-release.aab CalmAlarm.aab
 
       - uses: actions/upload-artifact@v4
         with:
           name: CalmAlarm-apk
-          path: CalmAlarm.apk
+          path: |
+            CalmAlarm.apk
+            CalmAlarm.aab
 
       - name: Publish release
         if: github.ref == 'refs/heads/main'
@@ -41,5 +45,9 @@ jobs:
         with:
           tag_name: v1.0.${{ github.run_number }}
           name: CalmAlarm v1.0.${{ github.run_number }}
-          body: Завантажте файл CalmAlarm.apk на телефон і відкрийте його, щоб встановити.
-          files: CalmAlarm.apk
+          body: |
+            CalmAlarm.apk - для встановлення на телефон.
+            CalmAlarm.aab - для завантаження в Google Play.
+          files: |
+            CalmAlarm.apk
+            CalmAlarm.aab
