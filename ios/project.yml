@@ -1,0 +1,87 @@
+# Опис Xcode-проєкту для XcodeGen (проєкт генерується на GitHub, Mac не потрібен).
+name: CalmAlarm
+options:
+  bundleIdPrefix: ua.calmalarm
+  deploymentTarget:
+    iOS: "26.0"
+  createIntermediateGroups: true
+  developmentLanguage: uk
+
+settings:
+  base:
+    SWIFT_VERSION: "5.0"
+    SWIFT_STRICT_CONCURRENCY: minimal
+    MARKETING_VERSION: "1.0"
+    CURRENT_PROJECT_VERSION: "1"
+    CODE_SIGN_STYLE: Automatic
+    TARGETED_DEVICE_FAMILY: "1"
+    ENABLE_USER_SCRIPT_SANDBOXING: YES
+    DEAD_CODE_STRIPPING: YES
+
+targets:
+  CalmAlarm:
+    type: application
+    platform: iOS
+    sources:
+      - path: CalmAlarm
+      - path: Shared
+    info:
+      path: CalmAlarm/Info.plist
+      properties:
+        CFBundleDisplayName: CalmAlarm
+        CFBundleShortVersionString: $(MARKETING_VERSION)
+        CFBundleVersion: $(CURRENT_PROJECT_VERSION)
+        CFBundleDevelopmentRegion: uk
+        LSRequiresIPhoneOS: true
+        UILaunchScreen: {}
+        UISupportedInterfaceOrientations:
+          - UIInterfaceOrientationPortrait
+        UIBackgroundModes:
+          - remote-notification
+        NSAlarmKitUsageDescription: "CalmAlarm ставить будильники, які дзвонять навіть у беззвучному режимі та з увімкненим фокусом."
+        NSSupportsLiveActivities: true
+        ITSAppUsesNonExemptEncryption: false
+        CalmServerURL: $(CALM_SERVER_URL)
+    entitlements:
+      path: CalmAlarm/CalmAlarm.entitlements
+      properties:
+        aps-environment: $(APS_ENVIRONMENT)
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: ua.calmalarm.app
+        ASSETCATALOG_COMPILER_APPICON_NAME: AppIcon
+        CALM_SERVER_URL: ""
+        APS_ENVIRONMENT: development
+        APP_PROFILE: ""
+        PROVISIONING_PROFILE_SPECIFIER: $(APP_PROFILE)
+    dependencies:
+      - target: CalmWidgets
+
+  CalmWidgets:
+    type: app-extension
+    platform: iOS
+    sources:
+      - path: Widgets
+      - path: Shared
+    info:
+      path: Widgets/Info.plist
+      properties:
+        CFBundleDisplayName: CalmAlarm
+        CFBundleShortVersionString: $(MARKETING_VERSION)
+        CFBundleVersion: $(CURRENT_PROJECT_VERSION)
+        NSExtension:
+          NSExtensionPointIdentifier: com.apple.widgetkit-extension
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: ua.calmalarm.app.widgets
+        SKIP_INSTALL: YES
+        WIDGET_PROFILE: ""
+        PROVISIONING_PROFILE_SPECIFIER: $(WIDGET_PROFILE)
+
+schemes:
+  CalmAlarm:
+    build:
+      targets:
+        CalmAlarm: all
+    archive:
+      config: Release

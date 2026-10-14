@@ -1,0 +1,166 @@
+name: iOS - відправити в TestFlight
+
+# Запускається вручну (Actions → «iOS - відправити в TestFlight» → Run workflow).
+# Збирає підписаний застосунок і завантажує його в App Store Connect.
+# Потрібні секрети: ASC_KEY_ID, ASC_ISSUER_ID, ASC_KEY_P8, APPLE_TEAM_ID.
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: 'Версія для App Store (наприклад 1.0 або 1.1)'
+        required: true
+        default: '1.0'
+
+permissions:
+  contents: write
+
+jobs:
+  testflight:
+    runs-on: macos-26
+    timeout-minutes: 45
+    env:
+      ASC_KEY_ID: ${{ secrets.ASC_KEY_ID }}
+      ASC_ISSUER_ID: ${{ secrets.ASC_ISSUER_ID }}
+      ASC_KEY_P8: ${{ secrets.ASC_KEY_P8 }}
+      APPLE_TEAM_ID: ${{ secrets.APPLE_TEAM_ID }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Перевірити секрети
+        run: |
+          missing=""
+          for v in ASC_KEY_ID ASC_ISSUER_ID ASC_KEY_P8 APPLE_TEAM_ID; do
+            [ -n "${!v}" ] || missing="$missing $v"
+          done
+          if [ -n "$missing" ]; then
+            echo "::error::Не вистачає секретів:$missing. Додайте їх у Settings → Secrets and variables → Actions."
+            exit 1
+          fi
+          URL="${{ vars.CALM_SERVER_URL }}"
+          [ -n "$URL" ] || URL="$(cat server/url.txt 2>/dev/null || true)"
+          if [ -z "$URL" ]; then
+            echo "::warning::Сервер ще не розгорнуто: збірка працюватиме як звичайний будильник, без очікування відбою."
+          fi
+          echo "CALM_SERVER_URL=$URL" >> "$GITHUB_ENV"
+          echo "BUILD_NUMBER=$(( ${{ github.run_number }} + 0 ))" >> "$GITHUB_ENV"
+
+      - name: Підготувати підпис (App Store Connect API)
+        id: sign
+        env:
+          SIGNING_DIR: ios/signing
+          P12_OUT: ${{ runner.temp }}/dist.p12
+        run: |
+          python3 -m venv "$RUNNER_TEMP/venv"
+          "$RUNNER_TEMP/venv/bin/pip" install -q pyjwt cryptography
+          "$RUNNER_TEMP/venv/bin/python" ios/ci/signing.py
+
+      - name: Зберегти зашифрований ключ сертифіката
+        run: |
+          if [ -n "$(git status --porcelain ios/signing)" ]; then
+            git config user.name "ci"
+            git config user.email "ci@users.noreply.github.com"
+            git add ios/signing
+            git commit -q -m "iOS: зашифрований ключ сертифіката для підпису [skip ci]"
+            git push
+          fi
+
+      - name: Ланцюжок ключів
+        env:
+          P12: ${{ steps.sign.outputs.p12 }}
+          P12_PASSWORD: ${{ steps.sign.outputs.p12_password }}
+        run: |
+          KC="$RUNNER_TEMP/ci.keychain-db"
+          PW="$(openssl rand -hex 16)"
+          security create-keychain -p "$PW" "$KC"
+          security set-keychain-settings -lut 21600 "$KC"
+          security unlock-keychain -p "$PW" "$KC"
+          curl -sSfL -o "$RUNNER_TEMP/AppleWWDRCAG3.cer" https://www.apple.com/certificateauthority/AppleWWDRCAG3.cer || true
+          [ -f "$RUNNER_TEMP/AppleWWDRCAG3.cer" ] && security import "$RUNNER_TEMP/AppleWWDRCAG3.cer" -k "$KC" -A || true
+          security import "$P12" -P "$P12_PASSWORD" -A -t cert -f pkcs12 -k "$KC"
+          security set-key-partition-list -S apple-tool:,apple:,codesign: -s -k "$PW" "$KC" > /dev/null
+          security list-keychains -d user -s "$KC" $(security list-keychains -d user | tr -d '"')
+          security find-identity -v -p codesigning "$KC"
+          echo "KEYCHAIN=$KC" >> "$GITHUB_ENV"
+          mkdir -p ~/private_keys
+          printf '%s\n' "$ASC_KEY_P8" > ~/private_keys/AuthKey_${ASC_KEY_ID}.p8
+
+      - name: Створити проєкт
+        working-directory: ios
+        run: |
+          HOMEBREW_NO_AUTO_UPDATE=1 brew install xcodegen
+          xcodegen generate
+          xcodebuild -version
+
+      - name: Зібрати архів
+        working-directory: ios
+        env:
+          APP_PROFILE: ${{ steps.sign.outputs.app_profile }}
+          WIDGET_PROFILE: ${{ steps.sign.outputs.widget_profile }}
+        run: |
+          set -o pipefail
+          xcodebuild archive \
+            -project CalmAlarm.xcodeproj -scheme CalmAlarm -configuration Release \
+            -destination 'generic/platform=iOS' \
+            -archivePath "$RUNNER_TEMP/CalmAlarm.xcarchive" \
+            CODE_SIGN_STYLE=Manual \
+            DEVELOPMENT_TEAM="$APPLE_TEAM_ID" \
+            CODE_SIGN_IDENTITY="Apple Distribution" \
+            APP_PROFILE="$APP_PROFILE" \
+            WIDGET_PROFILE="$WIDGET_PROFILE" \
+            APS_ENVIRONMENT=production \
+            CURRENT_PROJECT_VERSION="$BUILD_NUMBER" \
+            MARKETING_VERSION="${{ inputs.version }}" \
+            CALM_SERVER_URL="$CALM_SERVER_URL" \
+            OTHER_CODE_SIGN_FLAGS="--keychain $KEYCHAIN" \
+            > archive.log 2>&1 || { grep -E "error:|Error" archive.log | sort -u | head -60; tail -40 archive.log; exit 1; }
+          tail -3 archive.log
+
+      - name: Завантажити в App Store Connect
+        working-directory: ios
+        env:
+          APP_PROFILE: ${{ steps.sign.outputs.app_profile }}
+          WIDGET_PROFILE: ${{ steps.sign.outputs.widget_profile }}
+        run: |
+          cat > "$RUNNER_TEMP/ExportOptions.plist" <<EOF
+          <?xml version="1.0" encoding="UTF-8"?>
+          <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+          <plist version="1.0">
+          <dict>
+            <key>method</key><string>app-store-connect</string>
+            <key>destination</key><string>upload</string>
+            <key>teamID</key><string>${APPLE_TEAM_ID}</string>
+            <key>signingStyle</key><string>manual</string>
+            <key>signingCertificate</key><string>Apple Distribution</string>
+            <key>provisioningProfiles</key>
+            <dict>
+              <key>ua.calmalarm.app</key><string>${APP_PROFILE}</string>
+              <key>ua.calmalarm.app.widgets</key><string>${WIDGET_PROFILE}</string>
+            </dict>
+            <key>uploadSymbols</key><true/>
+            <key>manageAppVersionAndBuildNumber</key><false/>
+          </dict>
+          </plist>
+          EOF
+          xcodebuild -exportArchive \
+            -archivePath "$RUNNER_TEMP/CalmAlarm.xcarchive" \
+            -exportPath "$RUNNER_TEMP/export" \
+            -exportOptionsPlist "$RUNNER_TEMP/ExportOptions.plist" \
+            -authenticationKeyPath ~/private_keys/AuthKey_${ASC_KEY_ID}.p8 \
+            -authenticationKeyID "$ASC_KEY_ID" \
+            -authenticationKeyIssuerID "$ASC_ISSUER_ID" \
+            > export.log 2>&1 || {
+              grep -iE "error|fail" export.log | sort -u | head -60
+              if grep -qi "application record" export.log; then
+                echo "::error::Спершу створіть застосунок у App Store Connect (My Apps → + → New App, Bundle ID ua.calmalarm.app)."
+              fi
+              exit 1
+            }
+          tail -5 export.log
+          echo "### Збірку ${{ inputs.version }} (${BUILD_NUMBER}) відправлено в App Store Connect" >> "$GITHUB_STEP_SUMMARY"
+          echo "Через 10-30 хвилин вона з'явиться в TestFlight." >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Прибрати ключі
+        if: always()
+        run: |
+          [ -n "$KEYCHAIN" ] && security delete-keychain "$KEYCHAIN" || true
+          rm -rf ~/private_keys "$RUNNER_TEMP/dist.p12"

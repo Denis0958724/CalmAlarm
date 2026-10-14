@@ -1,0 +1,71 @@
+name: iOS - перевірка збірки
+
+# Збирає застосунок для симулятора iPhone (без підпису), щоб перевірити, що код компілюється.
+# Запускається лише коли змінюється папка ios/ - хвилини macOS у приватному репозиторії дорогі.
+on:
+  push:
+    branches: [main]
+    paths: ['ios/**', '.github/workflows/ios.yml']
+  workflow_dispatch:
+
+concurrency:
+  group: ios-build
+  cancel-in-progress: true
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    runs-on: macos-26
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Xcode
+        run: |
+          ls -d /Applications/Xcode*.app || true
+          xcodebuild -version
+          xcrun --sdk iphonesimulator --show-sdk-version
+
+      - name: XcodeGen
+        run: brew install xcodegen
+        env:
+          HOMEBREW_NO_AUTO_UPDATE: "1"
+
+      - name: Створити проєкт
+        working-directory: ios
+        run: xcodegen generate
+
+      - name: Зібрати для симулятора
+        working-directory: ios
+        run: |
+          set -o pipefail
+          xcodebuild build \
+            -project CalmAlarm.xcodeproj -scheme CalmAlarm -configuration Debug \
+            -destination 'generic/platform=iOS Simulator' \
+            CODE_SIGNING_ALLOWED=NO CODE_SIGNING_REQUIRED=NO \
+            > build.log 2>&1 || {
+              grep -E "error:|error -|Error:" build.log | sort -u | head -80
+              exit 1
+            }
+          grep -E "warning:" build.log | grep -v "appintentsmetadataprocessor" | sort -u | head -40 || true
+          tail -3 build.log
+
+      - name: Опублікувати помилки в гілку ios-log
+        if: failure()
+        run: |
+          mkdir -p /tmp/out
+          if [ -f ios/build.log ]; then
+            grep -E "error:|error -|Error:" ios/build.log | sort -u > /tmp/out/errors.txt || true
+            tail -200 ios/build.log > /tmp/out/tail.txt
+          fi
+          date > /tmp/out/run.txt
+          git config user.name "ci"
+          git config user.email "ci@users.noreply.github.com"
+          git checkout --orphan ios-log
+          git rm -rf --cached . > /dev/null
+          rm -rf ci-out && mkdir ci-out && cp /tmp/out/* ci-out/
+          git add -f ci-out
+          git commit -q -m "iOS build log ${{ github.run_number }}"
+          git push -f origin ios-log

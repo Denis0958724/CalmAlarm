@@ -1,0 +1,19 @@
+# Налаштування Cloudflare Worker. database_id підставляє GitHub Actions під час розгортання.
+name = "calmalarm"
+main = "src/index.js"
+compatibility_date = "2026-06-01"
+workers_dev = true
+
+[triggers]
+crons = ["* * * * *"]
+
+[[d1_databases]]
+binding = "DB"
+database_name = "calmalarm"
+database_id = "00000000-0000-0000-0000-000000000000"
+
+[vars]
+APNS_TOPIC = "ua.calmalarm.app"
+
+[observability]
+enabled = true

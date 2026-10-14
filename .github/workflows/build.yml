@@ -3,7 +3,7 @@ name: Зібрати APK
 on:
   push:
     branches: [main]
-    paths-ignore: ['ci/**', '.github/workflows/emulator-test.yml']
+    paths-ignore: ['ci/**', 'ios/**', 'server/**', '.github/workflows/emulator-test.yml', '.github/workflows/ios*.yml', '.github/workflows/server*.yml']
   workflow_dispatch:
 
 permissions:

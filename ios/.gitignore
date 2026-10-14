@@ -1,0 +1,7 @@
+# Генерується XcodeGen на GitHub
+*.xcodeproj
+CalmAlarm/Info.plist
+CalmAlarm/CalmAlarm.entitlements
+Widgets/Info.plist
+build/
+*.log
