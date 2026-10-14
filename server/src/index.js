@@ -128,7 +128,8 @@ export async function runCron(env, { now = Date.now(), fetchImpl = fetch } = {})
       continue;
     }
     const st = statusFor(alerts, parseWatch(r.watch), now);
-    if (st.active && shouldWait(alarm, st.level)) {
+    // Сигнал має сенс лише заздалегідь: якщо до будильника менше 20 с, він уже дзвонить.
+    if (st.active && shouldWait(alarm, st.level) && r.next_at - now >= 20 * 1000) {
       candidates.push({
         prio: 2,
         token: r.token,

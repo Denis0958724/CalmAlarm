@@ -10,8 +10,8 @@ import UserNotifications
 /// - кожен будильник - це системний будильник AlarmKit, який дзвонить завжди (навіть якщо щось зламалось);
 /// - за кілька хвилин до будильника сервер надсилає тихий сигнал, якщо у вашому регіоні тривога;
 ///   телефон сам перевіряє карту тривог і переносить будильник;
-/// - поки триває тривога, стоїть запасний будильник через 15 хв: якщо сигнал про відбій не дійде,
-///   він просто задзвонить (краще прокинутися, ніж проспати).
+/// - поки триває тривога, стоїть запасний будильник через 20 хв: якщо сигнал про відбій не дійде,
+///   він просто задзвонить (краще прокинутися, ніж проспати). Сервер сигналить кожні 10 хв, тож запас - 10 хв.
 @MainActor
 final class AppModel: ObservableObject {
     static let shared = AppModel()
@@ -31,7 +31,7 @@ final class AppModel: ObservableObject {
     private var syncTask: Task<Void, Never>?
 
     /// Через скільки дзвонить запасний будильник, поки чекаємо відбою.
-    static let checkpoint: TimeInterval = 15 * 60
+    static let checkpoint: TimeInterval = 20 * 60
     /// За скільки хвилин до будильника перевіряємо тривогу.
     static let lookahead: TimeInterval = 5 * 60
 
@@ -273,10 +273,12 @@ final class AppModel: ObservableObject {
     private func dropWaiting(_ id: Int, restore: Bool, alarm: WakeAlarm? = nil) async {
         guard let w = waitings[id] else { return }
         cancelKit(w.overrideId)
-        waitings[id] = nil
+        if !restore { cancelKit(w.safetyId) }
         removeNotification("wait-\(id)")
         if restore, let a = alarm {
             await finishWaiting(a, gaveUp: false)
+        } else {
+            waitings[id] = nil
         }
     }
 
@@ -434,9 +436,13 @@ final class AppModel: ObservableObject {
         if a.days.isEmpty {
             update(a.id) { $0.enabled = false }
             kitIds[a.id] = nil
-        } else if kitIds[a.id] == nil, let id = await scheduleKit(a, baseSchedule(a), title: Titles.normal) {
-            kitIds[a.id] = id
             cancelKit(w?.safetyId)
+        } else {
+            if kitIds[a.id] == nil, let id = await scheduleKit(a, baseSchedule(a), title: Titles.normal) {
+                kitIds[a.id] = id
+            }
+            // Страховку прибираємо лише тоді, коли звичайний розклад точно повернувся.
+            if kitIds[a.id] != nil { cancelKit(w?.safetyId) }
         }
         if gaveUp {
             notify(

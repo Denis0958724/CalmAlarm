@@ -12,7 +12,7 @@ struct AlarmTab: View {
     var body: some View {
         ZStack(alignment: .bottomTrailing) {
             ScrollView {
-                LazyVStack(spacing: 12) {
+                VStack(spacing: 12) {
                     ScreenHeader(title: "Будильник", subtitle: "Не будить під час тривоги - дзвонить після відбою")
                     RegionStatusCard(
                         region: model.region,
@@ -21,7 +21,7 @@ struct AlarmTab: View {
                         onRefresh: { Task { await model.refreshStatus() } },
                         onPick: onPickRegion
                     )
-                    ForEach(model.waitings.values.sorted { $0.since < $1.since }, id: \.alarmId) { w in
+                    ForEach(model.waitings.values.sorted { $0.since < $1.since }, id: \.cardKey) { w in
                         WaitingCard(w: w, alarm: model.alarms.first { $0.id == w.alarmId }) {
                             Task { await model.cancelWait(w.alarmId) }
                         }

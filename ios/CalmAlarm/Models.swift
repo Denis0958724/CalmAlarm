@@ -43,6 +43,9 @@ struct Waiting: Codable, Equatable {
     var overrideAt: Date?
     /// Разова «страховка» на наступний день (для повторюваних будильників).
     var safetyId: UUID? = nil
+
+    /// Ідентифікатор картки в списку (не збігається з ідентифікаторами будильників).
+    var cardKey: String { "wait-\(alarmId)" }
 }
 
 struct Region: Codable, Equatable {
@@ -55,7 +58,14 @@ struct Region: Codable, Equatable {
     var cityName: String? = nil
 
     var place: String? { cityName ?? districtName }
-    var subtitle: String { place ?? "Вся область" }
+    var subtitle: String {
+        if let p = place { return p }
+        switch oblastId {
+        case "31": return "Усе місто"
+        case "9999": return "Уся територія"
+        default: return "Вся область"
+        }
+    }
     var label: String {
         if let p = place { return "\(oblastName) · \(p)" }
         return oblastName

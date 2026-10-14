@@ -198,6 +198,15 @@ test('без тривоги або не той рівень - сигналу н�
   assert.equal(env.DB.all('SELECT next_at FROM alarms')[0].next_at, kyiv(2026, 10, 20, 7, 0));
 });
 
+test('тривога почалась у саму хвилину будильника - сигнал уже не потрібен', async () => {
+  const env = await setup({ now: kyiv(2026, 10, 19, 5, 0) });
+  const state = { siren: sirenWith([{ id: '14', level: 'red', since: kyiv(2026, 10, 19, 6, 59) }]), pushes: [] };
+  const r = await runCron(env, { now: kyiv(2026, 10, 19, 7, 0), fetchImpl: fakeFetch(state) });
+  assert.equal(r.pushed, 0);
+  assert.equal(env.DB.all('SELECT * FROM waiting').length, 0);
+  assert.equal(env.DB.all('SELECT next_at FROM alarms')[0].next_at, kyiv(2026, 10, 20, 7, 0));
+});
+
 test('карта тривог недоступна - нічого не надсилаємо', async () => {
   const env = await setup({ now: kyiv(2026, 10, 19, 5, 0) });
   const state = { sirenDown: true, pushes: [] };
