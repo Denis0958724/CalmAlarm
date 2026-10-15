@@ -56,6 +56,7 @@ targets:
         PROVISIONING_PROFILE_SPECIFIER: $(APP_PROFILE)
     dependencies:
       - target: CalmWidgets
+      - target: NotifyProbe
 
   CalmWidgets:
     type: app-extension
@@ -77,6 +78,27 @@ targets:
         SKIP_INSTALL: YES
         WIDGET_PROFILE: ""
         PROVISIONING_PROFILE_SPECIFIER: $(WIDGET_PROFILE)
+
+  NotifyProbe:
+    type: app-extension
+    platform: iOS
+    sources:
+      - path: NotifyProbe
+      - path: Shared
+    info:
+      path: NotifyProbe/Info.plist
+      properties:
+        CFBundleDisplayName: CalmAlarm
+        CFBundleShortVersionString: $(MARKETING_VERSION)
+        CFBundleVersion: $(CURRENT_PROJECT_VERSION)
+        NSExtension:
+          NSExtensionPointIdentifier: com.apple.usernotifications.service
+          NSExtensionPrincipalClass: $(PRODUCT_MODULE_NAME).NotificationService
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: ua.calmalarm.app.notify
+        APPLICATION_EXTENSION_API_ONLY: YES
+        SKIP_INSTALL: YES
 
 schemes:
   CalmAlarm:
