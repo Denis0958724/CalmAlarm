@@ -25,7 +25,8 @@ jobs:
       - name: Build
         run: |
           chmod +x gradlew
-          ./gradlew assembleRelease bundleRelease --stacktrace
+          ./gradlew assembleRelease -Pdonate=true --stacktrace
+          ./gradlew bundleRelease --stacktrace
 
       - name: Rename APK
         run: |
@@ -47,7 +48,7 @@ jobs:
           name: CalmAlarm v1.0.${{ github.run_number }}
           body: |
             CalmAlarm.apk - для встановлення на телефон.
-            CalmAlarm.aab - для завантаження в Google Play.
+            CalmAlarm.aab - для завантаження в Google Play (без кнопки «Підтримати»).
           files: |
             CalmAlarm.apk
             CalmAlarm.aab

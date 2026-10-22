@@ -152,6 +152,7 @@ fun AlarmTab(region: Region?, onPickRegion: () -> Unit) {
     var waitings by remember { mutableStateOf(Store.waitings(ctx)) }
     var editing by remember { mutableStateOf<Alarm?>(null) }
     var editingIsNew by remember { mutableStateOf(false) }
+    var showSupport by remember { mutableStateOf(false) }
     val ringing by RingService.ringing.collectAsState()
 
     DisposableEffect(Unit) {
@@ -205,7 +206,30 @@ fun AlarmTab(region: Region?, onPickRegion: () -> Unit) {
             contentPadding = PaddingValues(start = 16.dp, end = 16.dp, bottom = 100.dp),
             verticalArrangement = Arrangement.spacedBy(12.dp),
         ) {
-            item { ScreenHeader("Будильник", "Не будить під час тривоги - дзвонить після відбою") }
+            item {
+                if (BuildConfig.SHOW_SUPPORT) {
+                    Column(Modifier.padding(top = 16.dp, bottom = 12.dp)) {
+                        Row(verticalAlignment = Alignment.CenterVertically) {
+                            Text(
+                                "Будильник",
+                                style = MaterialTheme.typography.headlineMedium,
+                                fontWeight = FontWeight.SemiBold,
+                                color = MaterialTheme.colorScheme.onBackground,
+                                modifier = Modifier.weight(1f),
+                            )
+                            SupportButton(onClick = { showSupport = true })
+                        }
+                        Spacer(Modifier.height(2.dp))
+                        Text(
+                            "Не будить під час тривоги - дзвонить після відбою",
+                            style = MaterialTheme.typography.bodyMedium,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant,
+                        )
+                    }
+                } else {
+                    ScreenHeader("Будильник", "Не будить під час тривоги - дзвонить після відбою")
+                }
+            }
             if (ringing) {
                 item {
                     RingingBanner(onStop = {
@@ -263,6 +287,10 @@ fun AlarmTab(region: Region?, onPickRegion: () -> Unit) {
         ) {
             Icon(Icons.Filled.Add, contentDescription = "Додати будильник")
         }
+    }
+
+    if (showSupport) {
+        SupportSheet(onDismiss = { showSupport = false })
     }
 
     editing?.let { e ->

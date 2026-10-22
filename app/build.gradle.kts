@@ -16,6 +16,9 @@ android {
         val build = (System.getenv("GITHUB_RUN_NUMBER") ?: "1").toInt()
         versionCode = build
         versionName = "1.0.$build"
+        // Кнопка «Підтримати» є лише в APK з GitHub (-Pdonate=true). У Google Play (AAB) її немає.
+        val donate = (project.findProperty("donate") as String?) == "true"
+        buildConfigField("boolean", "SHOW_SUPPORT", donate.toString())
     }
 
     signingConfigs {
@@ -48,6 +51,7 @@ android {
     }
     buildFeatures {
         compose = true
+        buildConfig = true
     }
     lint {
         abortOnError = false
