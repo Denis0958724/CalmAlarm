@@ -39,7 +39,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 
 object Support {
-    const val CARD = "5168752118023400"
+    /** Номер картки є лише в APK з GitHub; у збірці для Google Play тут порожньо. */
+    val CARD: String = BuildConfig.SUPPORT_CARD
     val cardPretty: String get() = CARD.chunked(4).joinToString(" ")
 }
 

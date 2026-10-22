@@ -19,6 +19,7 @@ android {
         // Кнопка «Підтримати» є лише в APK з GitHub (-Pdonate=true). У Google Play (AAB) її немає.
         val donate = (project.findProperty("donate") as String?) == "true"
         buildConfigField("boolean", "SHOW_SUPPORT", donate.toString())
+        buildConfigField("String", "SUPPORT_CARD", if (donate) "\"5168752118023400\"" else "\"\"")
     }
 
     signingConfigs {
