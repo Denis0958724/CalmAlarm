@@ -31,7 +31,7 @@ object Notifs {
             lockscreenVisibility = Notification.VISIBILITY_PUBLIC
         }
         val status = NotificationChannel(CH_STATUS, "Стан будильника", NotificationManager.IMPORTANCE_LOW).apply {
-            description = "Будильник чекає відбою тривоги, будильник скасовано"
+            description = "Будильник чекає відбою або сьогодні не дзвонитиме через довгу тривогу"
         }
         val fallback = NotificationChannel(CH_FALLBACK, "Будильник (резервний)", NotificationManager.IMPORTANCE_HIGH).apply {
             description = "Використовується, якщо основний будильник не зміг запуститися"

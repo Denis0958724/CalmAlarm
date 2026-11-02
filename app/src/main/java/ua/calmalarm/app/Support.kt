@@ -125,7 +125,7 @@ fun SupportSheet(onDismiss: () -> Unit) {
                 Text("Скопіювати номер картки")
             }
             Text(
-                "Дякую! Кожна гривня допомагає робити застосунок кращим.",
+                "Дякую! Кожна гривня йде на розвиток застосунку.",
                 style = MaterialTheme.typography.bodySmall,
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
             )

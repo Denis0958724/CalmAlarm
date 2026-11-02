@@ -81,7 +81,7 @@ struct ChanceTab: View {
                 caption: now != nil ? "Тривога вже триває" : chanceLabel(r.percent)
             )
             .padding(.top, 8)
-            Text(alertText(now) ?? "Шанс, що тривогу оголосять найближчі 30 хвилин")
+            Text(alertText(now) ?? "Шанс, що тривогу оголосять у найближчі 30 хвилин")
                 .font(.body)
                 .foregroundStyle(.secondary)
                 .multilineTextAlignment(.center)

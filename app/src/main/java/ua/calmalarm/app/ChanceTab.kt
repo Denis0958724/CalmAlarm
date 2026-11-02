@@ -154,7 +154,7 @@ fun ChanceTab(region: Region?, onPickRegion: () -> Unit) {
                     now.since?.let { append(" з ${hm(it)}") }
                 }
             } else {
-                "Шанс, що тривогу оголосять найближчі 30 хвилин"
+                "Шанс, що тривогу оголосять у найближчі 30 хвилин"
             },
             modifier = Modifier.fillMaxWidth(),
             textAlign = TextAlign.Center,
