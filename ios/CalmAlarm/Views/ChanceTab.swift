@@ -252,11 +252,17 @@ private struct ChanceGauge: View {
                 .rotationEffect(.degrees(135))
             VStack(spacing: 0) {
                 Text(center)
-                    .font(.system(size: 58, weight: .bold))
+                    .font(.system(size: 50, weight: .bold))
                     .foregroundStyle(color)
                     .monospacedDigit()
-                Text(caption).font(.headline)
+                    .minimumScaleFactor(0.7)
+                    .lineLimit(1)
+                Text(caption)
+                    .font(.subheadline.weight(.semibold))
+                    .lineLimit(1)
+                    .minimumScaleFactor(0.8)
             }
+            .frame(width: 140)
         }
         .frame(width: 196, height: 196)
         .padding(18)
