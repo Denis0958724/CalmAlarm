@@ -1,0 +1,74 @@
+name: Android - знімки екрана
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  screens:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+      - uses: gradle/actions/setup-gradle@v4
+      - name: Build debug APK
+        run: |
+          chmod +x gradlew
+          ./gradlew assembleDebug -Pdonate=true
+      - name: Enable KVM
+        run: |
+          echo 'KERNEL=="kvm", GROUP="kvm", MODE="0666", OPTIONS+="static_node=kvm"' | sudo tee /etc/udev/rules.d/99-kvm4all.rules
+          sudo udevadm control --reload-rules
+          sudo udevadm trigger --name-match=kvm
+      - name: Pick a region with an alert nearby
+        run: |
+          curl -s -m 20 https://siren.pp.ua/api/v3/alerts -o /tmp/alerts.json || true
+          curl -s -m 30 https://siren.pp.ua/api/v3/regions -o /tmp/regions.json || true
+          python3 ci/pick_active.py /tmp/alerts.json /tmp/regions.json > /tmp/active.txt || true
+          python3 - <<'PY'
+          import json
+          oid, on, did, dn = (open("/tmp/active.txt").read().strip() or "16|x||").split("|")
+          if not did:
+              oid, on, did, dn = "14", "Київська область", "", "Броварський район"
+              try:
+                  for s in json.load(open("/tmp/regions.json"))["states"]:
+                      for d in s.get("regionChildIds", []):
+                          if d.get("regionName") == dn:
+                              did = d["regionId"]
+              except Exception:
+                  pass
+          json.dump({"oid": oid, "on": on, "did": did, "dn": dn, "cid": "", "cn": ""}, open("/tmp/region.json", "w"), ensure_ascii=False)
+          PY
+          cat /tmp/region.json
+      - name: Screenshots
+        uses: reactivecircus/android-emulator-runner@v2
+        timeout-minutes: 40
+        with:
+          api-level: 33
+          target: google_apis
+          arch: x86_64
+          profile: pixel_6
+          ram-size: 3072M
+          disk-size: 4096M
+          cores: 2
+          emulator-boot-timeout: 1200
+          emulator-options: -no-window -gpu swiftshader_indirect -noaudio -no-boot-anim -camera-back none -camera-front none -no-snapshot
+          disable-animations: false
+          script: bash ci/screens.sh
+      - name: Publish screenshots to branch android-screens
+        if: always()
+        run: |
+          git config user.name "ci"
+          git config user.email "ci@users.noreply.github.com"
+          mkdir -p ci-out && date > ci-out/run.txt
+          git checkout --orphan android-screens
+          git rm -rf --cached . > /dev/null
+          git add -f ci-out
+          git commit -q -m "Android screenshots ${{ github.run_number }}"
+          git push -f origin android-screens

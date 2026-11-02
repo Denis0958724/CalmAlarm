@@ -17,6 +17,11 @@ import kotlin.math.roundToInt
 
 data class MonitorPost(val channel: String, val time: Long, val text: String)
 
+enum class ThreatType { DRONE, MISSILE }
+
+/** Загроза, яку Повітряні сили або монітори згадали за останні 30 хв (місце приблизне: область або район). */
+data class Threat(val type: ThreatType, val oblastId: String, val districtId: String?, val time: Long)
+
 data class ChanceResult(
     val percent: Int,
     /** Звичайна ймовірність для цього місця й години, коли поруч тихо. */
@@ -27,6 +32,9 @@ data class ChanceResult(
     val posts: List<MonitorPost>,
     val mapOk: Boolean,
     val monitorsOk: Boolean,
+    /** Активні тривоги для карти: регіон → рівень. */
+    val alerts: Map<String, Level> = emptyMap(),
+    val threats: List<Threat> = emptyList(),
     val time: Long = System.currentTimeMillis(),
 )
 
@@ -246,6 +254,46 @@ object Chance {
         return TgFeatures(oblCount, dir, dist, global, clear, recentEnd, relevant)
     }
 
+    // ---------------- Загрози для карти ----------------
+
+    private val MISSILE_WORDS = listOf(
+        "ракет", "баліст", "крилат", "кинджал", "іскандер", "калібр", "х-101", "х-555", "х-22", "х-59", "х-69", "циркон",
+    )
+    private val DRONE_WORDS = listOf("бпла", "шахед", "дрон", "мопед", "герань", "гербер", "ударн")
+
+    private fun districtRegexes(ctx: Context): Map<String, List<Pair<String, Regex>>> =
+        UaGeo.get(ctx)?.districtsByOblast?.mapValues { (_, list) ->
+            list.mapNotNull { d -> placeStem(d.name)?.let { d.id to Regex("(?<!\\p{L})$it") } }
+        } ?: emptyMap()
+
+    fun threats(ctx: Context, posts: List<MonitorPost>, now: Long): List<Threat> {
+        val oblastRes = Regions.oblasts.associate { it.id to regexFor(it.patterns) }
+        val distRes = districtRegexes(ctx)
+        val found = LinkedHashMap<Triple<ThreatType, String, String?>, Long>()
+        for (p in posts.sortedByDescending { it.time }) {
+            // Позначки - лише з офіційного каналу Повітряних сил (монітори не враховуємо).
+            if (p.channel != "Повітряні сили") continue
+            val age = now - p.time
+            if (age > TG_WINDOW || age < -5 * MIN) continue
+            val t = normalize(p.text)
+            if (CLEAR.any { t.contains(it) }) continue
+            val types = buildList {
+                if (MISSILE_WORDS.any { t.contains(it) }) add(ThreatType.MISSILE)
+                if (DRONE_WORDS.any { t.contains(it) }) add(ThreatType.DRONE)
+            }
+            if (types.isEmpty()) continue
+            for ((oid, re) in oblastRes) {
+                if (!re.containsMatchIn(t)) continue
+                val did = distRes[oid]?.firstOrNull { it.second.containsMatchIn(t) }?.first
+                for (type in types) {
+                    val key = Triple(type, oid, did)
+                    if (key !in found) found[key] = p.time
+                }
+            }
+        }
+        return found.entries.take(30).map { (k, time) -> Threat(k.first, k.second, k.third, time) }
+    }
+
     // ---------------- Обчислення ----------------
 
     suspend fun compute(ctx: Context, region: Region): ChanceResult = withContext(Dispatchers.IO) {
@@ -276,11 +324,18 @@ object Chance {
 
         val tg = tgFeatures(region, cal.filterNotNull().flatten(), ext.filterNotNull().flatten(), now)
         val posts = tg.relevant.sortedByDescending { it.time }.distinctBy { it.text }.take(6)
+        val mapAlerts = snap?.entries?.filter { AlertApi.fresh(it, now) }?.associate { it.regionId to it.level }.orEmpty()
+        val mapThreats = runCatching {
+            threats(ctx, cal.filterNotNull().flatten(), now)
+        }.getOrDefault(emptyList())
 
         if (snap != null) {
             val st = AlertApi.statusFor(ctx, snap, region)
             if (st.active) {
-                return ChanceResult(100, 100, st, emptyList(), posts, mapOk = true, monitorsOk = monitorsOk)
+                return ChanceResult(
+                    100, 100, st, emptyList(), posts, mapOk = true, monitorsOk = monitorsOk,
+                    alerts = mapAlerts, threats = mapThreats,
+                )
             }
         }
 
@@ -380,6 +435,8 @@ object Chance {
             posts = posts,
             mapOk = snap != null,
             monitorsOk = monitorsOk,
+            alerts = mapAlerts,
+            threats = mapThreats,
         )
     }
 }

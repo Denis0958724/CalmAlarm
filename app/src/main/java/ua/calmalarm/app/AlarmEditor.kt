@@ -16,6 +16,8 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.navigationBarsPadding
+import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -81,11 +83,12 @@ fun AlarmEditor(
             onDispose { Tones.stopPreview() }
         }
 
-        Surface(Modifier.fillMaxSize(), color = MaterialTheme.colorScheme.background) {
+        AppBackground {
             Column(Modifier.fillMaxSize()) {
                 Row(
                     Modifier
                         .fillMaxWidth()
+                        .statusBarsPadding()
                         .padding(horizontal = 4.dp, vertical = 8.dp),
                     verticalAlignment = Alignment.CenterVertically,
                 ) {
@@ -96,8 +99,13 @@ fun AlarmEditor(
                         fontWeight = FontWeight.SemiBold,
                         modifier = Modifier.weight(1f),
                     )
-                    TextButton(onClick = {
-                        onSave(
+                    Box(
+                        Modifier
+                            .padding(end = 8.dp)
+                            .clip(RoundedCornerShape(50))
+                            .background(Palette.accentBrush)
+                            .clickable {
+                                onSave(
                             initial.copy(
                                 hour = timeState.hour,
                                 minute = timeState.minute,
@@ -110,8 +118,10 @@ fun AlarmEditor(
                                 enabled = true,
                             ),
                         )
-                    }) {
-                        Text("Зберегти", style = MaterialTheme.typography.titleMedium)
+                            }
+                            .padding(horizontal = 18.dp, vertical = 9.dp),
+                    ) {
+                        Text("Зберегти", style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold, color = Color.White)
                     }
                 }
 
@@ -119,7 +129,8 @@ fun AlarmEditor(
                     Modifier
                         .weight(1f)
                         .verticalScroll(rememberScrollState())
-                        .padding(horizontal = 20.dp),
+                        .padding(horizontal = 20.dp)
+                        .navigationBarsPadding(),
                 ) {
                     Box(Modifier.fillMaxWidth().padding(top = 8.dp), contentAlignment = Alignment.Center) {
                         TimePicker(state = timeState)
@@ -134,9 +145,9 @@ fun AlarmEditor(
                                 Modifier
                                     .size(42.dp)
                                     .clip(CircleShape)
-                                    .background(
-                                        if (selected) MaterialTheme.colorScheme.primary
-                                        else MaterialTheme.colorScheme.surfaceContainerHigh,
+                                    .then(
+                                        if (selected) Modifier.background(Palette.accentBrush)
+                                        else Modifier.background(MaterialTheme.colorScheme.surfaceContainerHigh),
                                     )
                                     .clickable { days = if (selected) days - d else days + d },
                                 contentAlignment = Alignment.Center,
@@ -144,7 +155,7 @@ fun AlarmEditor(
                                 Text(
                                     DAY_SHORT[d - 1],
                                     style = MaterialTheme.typography.labelLarge,
-                                    color = if (selected) MaterialTheme.colorScheme.onPrimary else MaterialTheme.colorScheme.onSurface,
+                                    color = if (selected) Color.White else MaterialTheme.colorScheme.onSurface,
                                 )
                             }
                         }

@@ -16,18 +16,21 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 
 @Composable
 fun ScreenHeader(title: String, subtitle: String? = null, modifier: Modifier = Modifier) {
-    Column(modifier.padding(top = 20.dp, bottom = 12.dp)) {
+    Column(modifier.padding(top = 24.dp, bottom = 14.dp)) {
         Text(
             title,
-            style = MaterialTheme.typography.headlineMedium,
-            fontWeight = FontWeight.SemiBold,
+            fontSize = 32.sp,
+            lineHeight = 36.sp,
+            fontWeight = FontWeight.Bold,
+            letterSpacing = (-0.5).sp,
             color = MaterialTheme.colorScheme.onBackground,
         )
         if (subtitle != null) {
-            Spacer(Modifier.height(2.dp))
+            Spacer(Modifier.height(4.dp))
             Text(subtitle, style = MaterialTheme.typography.bodyMedium, color = MaterialTheme.colorScheme.onSurfaceVariant)
         }
     }
@@ -37,9 +40,9 @@ fun ScreenHeader(title: String, subtitle: String? = null, modifier: Modifier = M
 fun SectionTitle(text: String, modifier: Modifier = Modifier) {
     Text(
         text,
-        modifier = modifier.padding(top = 24.dp, bottom = 8.dp),
+        modifier = modifier.padding(top = 24.dp, bottom = 10.dp),
         style = MaterialTheme.typography.titleMedium,
-        fontWeight = FontWeight.SemiBold,
+        fontWeight = FontWeight.Bold,
         color = MaterialTheme.colorScheme.onBackground,
     )
 }

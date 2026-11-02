@@ -1,7 +1,13 @@
 package ua.calmalarm.app
 
 import android.widget.Toast
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.verticalScroll
+import androidx.compose.foundation.layout.size
+import androidx.compose.ui.graphics.Color
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -92,42 +98,42 @@ private fun RegionSummary(region: Region, onChange: () -> Unit) {
     Column(
         Modifier
             .fillMaxSize()
+            .verticalScroll(rememberScrollState())
             .padding(horizontal = 16.dp),
     ) {
         ScreenHeader("Регіон", "Будильник зважає на тривогу саме тут")
-        Card(
-            shape = RoundedCornerShape(24.dp),
-            colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.primaryContainer),
-        ) {
-            Row(Modifier.fillMaxWidth().padding(20.dp), verticalAlignment = Alignment.CenterVertically) {
-                Icon(
-                    Icons.Outlined.LocationOn,
-                    contentDescription = null,
-                    tint = MaterialTheme.colorScheme.onPrimaryContainer,
-                )
-                Spacer(Modifier.width(14.dp))
-                Column {
-                    Text(
-                        region.oblastName,
-                        style = MaterialTheme.typography.titleLarge,
-                        fontWeight = FontWeight.SemiBold,
-                        color = MaterialTheme.colorScheme.onPrimaryContainer,
-                    )
-                    Text(
-                        region.subtitle,
-                        style = MaterialTheme.typography.bodyLarge,
-                        color = MaterialTheme.colorScheme.onPrimaryContainer,
-                    )
+        GlassCard(Modifier.fillMaxWidth(), tint = Palette.Sky) {
+            Column(Modifier.padding(14.dp)) {
+                Row(Modifier.padding(start = 6.dp, end = 6.dp, bottom = 12.dp), verticalAlignment = Alignment.CenterVertically) {
+                    Box(
+                        Modifier
+                            .size(44.dp)
+                            .background(Palette.accentBrush, CircleShape),
+                        contentAlignment = Alignment.Center,
+                    ) {
+                        Icon(Icons.Outlined.LocationOn, contentDescription = null, tint = Color.White)
+                    }
+                    Spacer(Modifier.width(14.dp))
+                    Column {
+                        Text(
+                            region.oblastName,
+                            style = MaterialTheme.typography.titleLarge,
+                            fontWeight = FontWeight.Bold,
+                        )
+                        Text(
+                            region.subtitle,
+                            style = MaterialTheme.typography.bodyLarge,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant,
+                        )
+                    }
                 }
+                RegionMap(region = region, alerts = emptyMap(), threats = emptyList(), aspect = 1.45f)
             }
         }
         val ob = Regions.byId[region.oblastId]
         if (region.districtId == null && ob?.hasDistricts == true) {
             Spacer(Modifier.height(12.dp))
-            Card(
-                shape = RoundedCornerShape(20.dp),
-                colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceContainerLow),
-            ) {
+            GlassCard(Modifier.fillMaxWidth()) {
                 Row(Modifier.padding(16.dp)) {
                     Icon(Icons.Filled.Info, contentDescription = null, tint = MaterialTheme.colorScheme.primary)
                     Spacer(Modifier.width(12.dp))
@@ -139,10 +145,9 @@ private fun RegionSummary(region: Region, onChange: () -> Unit) {
                 }
             }
         }
-        Spacer(Modifier.height(20.dp))
-        Button(onClick = onChange, modifier = Modifier.fillMaxWidth().height(52.dp)) {
-            Text("Змінити регіон")
-        }
+        Spacer(Modifier.height(16.dp))
+        GradientButton("Змінити регіон", onChange)
+        Spacer(Modifier.height(120.dp))
     }
 }
 
@@ -194,7 +199,7 @@ private fun OblastPicker(
 ) {
     LazyColumn(
         Modifier.fillMaxSize(),
-        contentPadding = PaddingValues(start = 8.dp, end = 8.dp, bottom = 24.dp),
+        contentPadding = PaddingValues(start = 8.dp, end = 8.dp, bottom = 120.dp),
     ) {
         item {
             Box(Modifier.padding(horizontal = 8.dp)) {
@@ -229,7 +234,7 @@ private fun DistrictPicker(
 
     LazyColumn(
         Modifier.fillMaxSize(),
-        contentPadding = PaddingValues(start = 8.dp, end = 8.dp, bottom = 24.dp),
+        contentPadding = PaddingValues(start = 8.dp, end = 8.dp, bottom = 120.dp),
         verticalArrangement = Arrangement.spacedBy(0.dp),
     ) {
         item {

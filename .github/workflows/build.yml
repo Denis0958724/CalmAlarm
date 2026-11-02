@@ -3,7 +3,7 @@ name: Зібрати APK
 on:
   push:
     branches: [main]
-    paths-ignore: ['ci/**', 'ios/**', 'server/**', '.github/workflows/emulator-test.yml', '.github/workflows/ios*.yml', '.github/workflows/server*.yml']
+    paths-ignore: ['ci/**', 'ios/**', 'server/**', 'tools/**', '.github/workflows/emulator-test.yml', '.github/workflows/android-screens.yml', '.github/workflows/ios*.yml', '.github/workflows/server*.yml']
   workflow_dispatch:
 
 permissions:
@@ -25,8 +25,24 @@ jobs:
       - name: Build
         run: |
           chmod +x gradlew
-          ./gradlew assembleRelease -Pdonate=true --stacktrace
-          ./gradlew bundleRelease --stacktrace
+          set -o pipefail
+          ./gradlew assembleRelease -Pdonate=true --stacktrace 2>&1 | tee build.log
+          ./gradlew bundleRelease --stacktrace 2>&1 | tee -a build.log
+
+      - name: Publish build errors to branch android-log
+        if: failure()
+        run: |
+          mkdir -p /tmp/out
+          grep -E "^e: |error:|FAILURE|What went wrong" -A3 build.log | head -200 > /tmp/out/errors.txt || true
+          tail -80 build.log > /tmp/out/tail.txt || true
+          git config user.name "ci"
+          git config user.email "ci@users.noreply.github.com"
+          git checkout --orphan android-log
+          git rm -rf --cached . > /dev/null
+          rm -rf ci-out && mkdir ci-out && cp /tmp/out/* ci-out/
+          git add -f ci-out
+          git commit -q -m "Android build log ${{ github.run_number }}"
+          git push -f origin android-log
 
       - name: Rename APK
         run: |
