@@ -1,4 +1,4 @@
-"""Іконка CalmAlarm: будильник із місяцем на темному тлі з синьо-фіолетовим сяйвом.
+"""Іконка CalmAlarm: симетричний будильник (стрілки 10:10) на темному тлі із сяйвом по центру.
 
 Запуск (потрібні Pillow і Node з Playwright):
     python3 tools/icon/make_icon.py
@@ -13,10 +13,21 @@ HERE = os.path.dirname(os.path.abspath(__file__))
 OUT = os.path.join(HERE, 'out')
 os.makedirs(OUT, exist_ok=True)
 
-# ---- геометрія (полотно 1024) ----
-CX, CY, R = 512, 574, 248      # центр і радіус кільця
-RING_W = 58
-BELL_D, BELL_R = R + 70, 90    # відстань дзвоників від центру і їхній радіус
+# ---- геометрія (полотно 1024), усе симетрично відносно вертикалі ----
+K = 1.05                        # загальний масштаб малюнка
+R = 232 * K                     # радіус кільця (по середині лінії)
+RING_W = 54 * K
+BELL_D, BELL_R = R + 60 * K, 68 * K   # дзвоники: відстань від центру і радіус
+LEG_R0, LEG_R1, LEG_W = R + 20 * K, R + 76 * K, 42 * K  # ніжки
+LEG_A = 60                       # кут ніжок від горизонталі
+HAND_L, HAND_W, DOT_R = 0.62 * R, 36 * K, 26 * K       # стрілки 10:10 однакової довжини
+BELL_A = 50                      # кут дзвоників від горизонталі
+CX = 512
+# межі малюнка по вертикалі, щоб поставити його точно в центр полотна
+_top = (BELL_D * math.sin(math.radians(BELL_A)) + BELL_R)
+_half_w = BELL_D * math.cos(math.radians(BELL_A)) + BELL_R
+_bot = (LEG_R1 * math.sin(math.radians(LEG_A)) + LEG_W / 2)
+CY = 512 + (_top - _bot) / 2
 
 
 def rot(px, py, ang):
@@ -33,67 +44,62 @@ def bell_path(theta, f=lambda x, y: (x, y)):
         rx, ry = rot(x, y, theta + 90)
         return f(bx + rx, by + ry)
     r = BELL_R
-    (x0, y0), (x1, y1), (qx, qy) = P(-r, 0), P(r, 0), P(0, r * 0.22)
+    (x0, y0), (x1, y1), (qx, qy) = P(-r, 0), P(r, 0), P(0, r * 0.28)
     rr = f(CX + r, 0)[0] - f(CX, 0)[0]
     return f'M{x0:.2f},{y0:.2f} A{rr:.2f},{rr:.2f} 0 0 1 {x1:.2f},{y1:.2f} Q{qx:.2f},{qy:.2f} {x0:.2f},{y0:.2f} Z'
 
 
-def moon_path(f=lambda x, y: (x, y)):
-    mr, mx, my = 128, CX - 14, CY + 10
-    a0, a1 = math.radians(-60), math.radians(32)
-    (sx, sy) = f(mx + mr * math.cos(a0), my + mr * math.sin(a0))
-    (ex, ey) = f(mx + mr * math.cos(a1), my + mr * math.sin(a1))
-    k = f(CX + 1, 0)[0] - f(CX, 0)[0]
-    return (f'M{sx:.2f},{sy:.2f} A{mr*k:.2f},{mr*k:.2f} 0 1 0 {ex:.2f},{ey:.2f} '
-            f'A{mr*0.8*k:.2f},{mr*0.8*k:.2f} 0 1 1 {sx:.2f},{sy:.2f} Z')
+def ray(theta, r0, r1, f=lambda x, y: (x, y)):
+    t = math.radians(theta)
+    (x0, y0) = f(CX + r0 * math.cos(t), CY + r0 * math.sin(t))
+    (x1, y1) = f(CX + r1 * math.cos(t), CY + r1 * math.sin(t))
+    return f'M{x0:.2f},{y0:.2f} L{x1:.2f},{y1:.2f}'
 
 
-def star_path(x, y, s, f=lambda x, y: (x, y)):
-    k = s * 0.16
-    pts = [(x, y - s), (x + k, y - k), (x + k, y - k), (x + s, y), (x + k, y + k), (x + k, y + k), (x, y + s),
-           (x - k, y + k), (x - k, y + k), (x - s, y), (x - k, y - k), (x - k, y - k), (x, y - s)]
-    p = [f(*q) for q in pts]
-    d = f'M{p[0][0]:.2f},{p[0][1]:.2f}'
-    for i in range(1, 13, 3):
-        d += ' C' + ' '.join(f'{a:.2f},{b:.2f}' for a, b in p[i:i + 3])
-    return d + ' Z'
+def legs_path(f=lambda x, y: (x, y)):
+    return ray(180 - LEG_A, LEG_R0, LEG_R1, f) + ' ' + ray(LEG_A, LEG_R0, LEG_R1, f)
 
 
-STARS = [(CX + 92, CY - 78, 40), (CX + 138, CY + 6, 20)]
+def hands_path(f=lambda x, y: (x, y)):
+    # 10:10: дзеркально, по 60 градусів від «12»
+    return ray(-150, 0, HAND_L, f) + ' ' + ray(-30, 0, HAND_L, f)
+
+
+def dot_path(r, f=lambda x, y: (x, y)):
+    (x0, y0), (x1, y1) = f(CX - r, CY), f(CX + r, CY)
+    k = (x1 - x0) / 2
+    return f'M{x0:.2f},{y0:.2f} A{k:.2f},{k:.2f} 0 1 1 {x1:.2f},{y1:.2f} A{k:.2f},{k:.2f} 0 1 1 {x0:.2f},{y0:.2f} Z'
 
 
 def ring_path(r, f=lambda x, y: (x, y)):
     (x0, y0), (x1, y1) = f(CX, CY - r), f(CX, CY + r)
     k = (f(CX + r, 0)[0] - f(CX, 0)[0])
-    return f'M{x0:.2f},{y0:.2f} A{k:.2f},{k:.2f} 0 1 1 {x1:.2f},{y1:.2f} A{k:.2f},{k:.2f} 0 1 1 {x0:.2f},{y0:.2f}'
+    return f'M{x0:.2f},{y0:.2f} A{k:.2f},{k:.2f} 0 1 1 {x1:.2f},{y1:.2f} A{k:.2f},{k:.2f} 0 1 1 {x0:.2f},{y0:.2f} Z'
 
 
 # ---- SVG ----
 U = 'gradientUnits="userSpaceOnUse"'
+TOP, BOT = CY - _top, CY + _bot
 DEFS = f'''
-<linearGradient id="dk" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#101C44"/><stop offset="1" stop-color="#070B1C"/></linearGradient>
-<radialGradient id="g1" {U} cx="250" cy="200" r="620"><stop offset="0" stop-color="#4F8CFF" stop-opacity="0.55"/><stop offset="1" stop-color="#4F8CFF" stop-opacity="0"/></radialGradient>
-<radialGradient id="g2" {U} cx="880" cy="900" r="640"><stop offset="0" stop-color="#7C5CFF" stop-opacity="0.55"/><stop offset="1" stop-color="#7C5CFF" stop-opacity="0"/></radialGradient>
-<linearGradient id="ring" {U} x1="{CX-R}" y1="{CY-R}" x2="{CX+R}" y2="{CY+R}"><stop offset="0" stop-color="#7DB2FF"/><stop offset="0.5" stop-color="#5E7BFF"/><stop offset="1" stop-color="#9A72FF"/></linearGradient>
-<linearGradient id="bellg" {U} x1="230" y1="0" x2="800" y2="0"><stop offset="0" stop-color="#6FA6FF"/><stop offset="1" stop-color="#8E6CFF"/></linearGradient>
-<radialGradient id="face" {U} cx="{CX}" cy="{CY-80}" r="{R}"><stop offset="0" stop-color="#FFFFFF" stop-opacity="0.16"/><stop offset="1" stop-color="#FFFFFF" stop-opacity="0.04"/></radialGradient>
+<linearGradient id="dk" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#111D46"/><stop offset="1" stop-color="#060A18"/></linearGradient>
+<radialGradient id="g1" {U} cx="512" cy="{CY:.1f}" r="560"><stop offset="0" stop-color="#5C6DFF" stop-opacity="0.55"/><stop offset="0.55" stop-color="#4F8CFF" stop-opacity="0.16"/><stop offset="1" stop-color="#4F8CFF" stop-opacity="0"/></radialGradient>
+<radialGradient id="g2" {U} cx="512" cy="-80" r="620"><stop offset="0" stop-color="#4F8CFF" stop-opacity="0.30"/><stop offset="1" stop-color="#4F8CFF" stop-opacity="0"/></radialGradient>
+<linearGradient id="acc" {U} x1="0" y1="{TOP:.1f}" x2="0" y2="{BOT:.1f}"><stop offset="0" stop-color="#7FB4FF"/><stop offset="0.5" stop-color="#6A80FF"/><stop offset="1" stop-color="#8F6CFF"/></linearGradient>
+<radialGradient id="face" {U} cx="512" cy="{CY - R*0.45:.1f}" r="{R:.1f}"><stop offset="0" stop-color="#FFFFFF" stop-opacity="0.15"/><stop offset="1" stop-color="#FFFFFF" stop-opacity="0.04"/></radialGradient>
 <filter id="glow" x="-40%" y="-40%" width="180%" height="180%"><feGaussianBlur stdDeviation="26"/></filter>
-<filter id="mglow" x="-40%" y="-40%" width="180%" height="180%"><feGaussianBlur stdDeviation="14"/></filter>
 '''
-moon = f'<path d="{moon_path()}"/>'
-stars = ''.join(f'<path d="{star_path(*s)}"/>' for s in STARS)
-GLYPH = f'''<g fill="url(#bellg)"><path d="{bell_path(-130)}"/><path d="{bell_path(-50)}"/></g>
-<circle cx="{CX}" cy="{CY}" r="{R}" fill="none" stroke="url(#ring)" stroke-width="64" filter="url(#glow)" opacity="0.85"/>
-<circle cx="{CX}" cy="{CY}" r="{R-32}" fill="url(#face)"/>
-<circle cx="{CX}" cy="{CY}" r="{R}" fill="none" stroke="url(#ring)" stroke-width="{RING_W}"/>
-<circle cx="{CX}" cy="{CY}" r="{R+29}" fill="none" stroke="#fff" stroke-opacity="0.18" stroke-width="2"/>
-<g fill="#BFD3FF" filter="url(#mglow)" opacity="0.7">{moon}</g><g fill="#fff">{moon}{stars}</g>'''
+GLYPH = f'''<g fill="url(#acc)"><path d="{bell_path(-180 + BELL_A)}"/><path d="{bell_path(-BELL_A)}"/></g>
+<path d="{legs_path()}" stroke="url(#acc)" stroke-width="{LEG_W:.1f}" stroke-linecap="round" fill="none"/>
+<circle cx="{CX}" cy="{CY:.1f}" r="{R:.1f}" fill="none" stroke="url(#acc)" stroke-width="{RING_W+8:.1f}" filter="url(#glow)" opacity="0.85"/>
+<circle cx="{CX}" cy="{CY:.1f}" r="{R-RING_W/2:.1f}" fill="url(#face)"/>
+<circle cx="{CX}" cy="{CY:.1f}" r="{R:.1f}" fill="none" stroke="url(#acc)" stroke-width="{RING_W:.1f}"/>
+<circle cx="{CX}" cy="{CY:.1f}" r="{R+RING_W/2:.1f}" fill="none" stroke="#fff" stroke-opacity="0.16" stroke-width="2"/>
+<path d="{hands_path()}" stroke="#fff" stroke-width="{HAND_W:.1f}" stroke-linecap="round" fill="none"/>
+<circle cx="{CX}" cy="{CY:.1f}" r="{DOT_R:.1f}" fill="#fff"/>'''
 
 
 def bg(x0, size):
-    return (f'<rect x="{x0}" y="{x0}" width="{size}" height="{size}" fill="url(#dk)"/>'
-            f'<rect x="{x0}" y="{x0}" width="{size}" height="{size}" fill="url(#g1)"/>'
-            f'<rect x="{x0}" y="{x0}" width="{size}" height="{size}" fill="url(#g2)"/>')
+    return ''.join(f'<rect x="{x0}" y="{x0}" width="{size}" height="{size}" fill="url(#{g})"/>' for g in ('dk', 'g2', 'g1'))
 
 
 def svg(body, vb='0 0 1024 1024'):
@@ -149,12 +155,17 @@ def stroke(d, c, w):
             f'        android:strokeWidth="{w:.2f}"\n        android:pathData="{d}" />\n')
 
 
-def glyph_vector(f, k, color, small=False):
-    p = [fill(bell_path(-130, f), color), fill(bell_path(-50, f), color),
-         stroke(ring_path(R, f), color, RING_W * k), fill(moon_path(f), color)]
-    for s in (STARS[:1] if small else STARS):
-        p.append(fill(star_path(*s, f=f), color))
-    return p
+def stroke_round(d, c, w):
+    return (f'    <path\n        android:fillColor="#00000000"\n        android:strokeColor="{c}"\n'
+            f'        android:strokeWidth="{w:.2f}"\n        android:strokeLineCap="round"\n        android:pathData="{d}" />\n')
+
+
+def glyph_vector(f, k, color):
+    return [fill(bell_path(-180 + BELL_A, f), color), fill(bell_path(-BELL_A, f), color),
+            stroke_round(legs_path(f), color, LEG_W * k),
+            stroke(ring_path(R, f), color, RING_W * k),
+            stroke_round(hands_path(f), color, HAND_W * k),
+            fill(dot_path(DOT_R, f), color)]
 
 
 # Монохромна (тематичні іконки Android 13+): той самий масштаб, що й кольорова
@@ -163,9 +174,9 @@ mono = lambda x, y: (18 + x * k, 18 + y * k)
 open(os.path.join(res, 'drawable/ic_launcher_monochrome.xml'), 'w').write(
     vector(108, 108, glyph_vector(mono, k, '#FF000000')))
 
-# Значок сповіщень 24dp: межі малюнка приблизно x 220..804, y 166..851
-kn = 22.4 / 685
-notif = lambda x, y: (12 + (x - 512) * kn, 12 + (y - 508.5) * kn)
+# Значок сповіщень 24dp: малюнок вписано в 22.4dp
+kn = 22.4 / max(_top + _bot, 2 * _half_w)
+notif = lambda x, y: (12 + (x - CX) * kn, 12 + (y - CY) * kn + (_top - _bot) / 2 * kn)
 open(os.path.join(res, 'drawable/ic_notif.xml'), 'w').write(
-    vector(24, 24, glyph_vector(notif, kn, '#FFFFFFFF', small=True)))
-print('ok')
+    vector(24, 24, glyph_vector(notif, kn, '#FFFFFFFF')))
+print('ok', round(CY, 1), round(CY - _top, 1), round(CY + _bot, 1))
