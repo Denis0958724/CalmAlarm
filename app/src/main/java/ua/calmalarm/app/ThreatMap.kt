@@ -201,7 +201,7 @@ private fun DrawScope.drawMapLayer(
             if (!s.bounds.overlaps(vis)) continue
             val c = levelColor(level)
             val isOblast = geo.oblasts.containsKey(rid)
-            drawPath(s.path, c.copy(alpha = if (isOblast) 0.16f else 0.30f), style = Fill)
+            drawPath(s.path, c.copy(alpha = if (isOblast) 0.12f else 0.30f), style = Fill)
             if (!isOblast) drawPath(s.path, c.copy(alpha = 0.75f), style = Stroke(width = 1.3f * px, join = StrokeJoin.Round))
         }
 
@@ -336,7 +336,7 @@ private fun DrawScope.drawThreats(geo: UaGeoData, threats: List<Threat>, t: MapT
         val types = list.map { it.type }.distinct()
         val icon = 15.dp.toPx()
         types.forEachIndexed { i, type ->
-            val at = Offset(base.x + (i - (types.size - 1) / 2f) * icon * 1.6f, base.y - 14.dp.toPx())
+            val at = Offset(base.x + (i - (types.size - 1) / 2f) * icon * 1.6f, base.y - 19.dp.toPx())
             val color = if (type == ThreatType.DRONE) MapColors.drone else MapColors.missile
             // Пульсуюче коло.
             val p = (phase + i * 0.3f) % 1f

@@ -150,7 +150,7 @@ enum MapPainter {
             guard let shape = geo.shape(for: rid), shape.bounds.intersects(vis) else { continue }
             let col = levelColor(level)
             let isOblast = geo.oblasts[rid] != nil
-            c.fill(Path(shape.path), with: .color(col.opacity(isOblast ? 0.16 : 0.30)))
+            c.fill(Path(shape.path), with: .color(col.opacity(isOblast ? 0.12 : 0.30)))
             if !isOblast { c.stroke(Path(shape.path), with: .color(col.opacity(0.75)), style: stroke(1.3)) }
         }
 
@@ -272,7 +272,7 @@ enum MapPainter {
             for t in list where !types.contains(t.type) { types.append(t.type) }
             let r: CGFloat = 15
             for (i, type) in types.enumerated() {
-                let at = CGPoint(x: base.x + (CGFloat(i) - CGFloat(types.count - 1) / 2) * r * 1.6, y: base.y - 14)
+                let at = CGPoint(x: base.x + (CGFloat(i) - CGFloat(types.count - 1) / 2) * r * 1.6, y: base.y - 19)
                 let col = type == .drone ? MapColors.drone : MapColors.missile
                 let p = (phase + Double(i) * 0.3).truncatingRemainder(dividingBy: 1)
                 let pr = r * (0.8 + CGFloat(p) * 1.3)
