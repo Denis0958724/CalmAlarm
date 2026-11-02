@@ -294,6 +294,19 @@ object Chance {
         return found.entries.take(30).map { (k, time) -> Threat(k.first, k.second, k.third, time) }
     }
 
+    /** Лише для перевірки вигляду в налагоджувальній збірці (прапорець demo_threats); у релізі завжди порожньо. */
+    private fun demoThreats(ctx: Context, region: Region, now: Long): List<Threat> {
+        if (!BuildConfig.DEBUG || !Store.flag(ctx, "demo_threats")) return emptyList()
+        val geo = UaGeo.get(ctx) ?: return emptyList()
+        val focus = region.districtId?.let { geo.districts[it] } ?: geo.oblasts[region.oblastId] ?: return emptyList()
+        val near = geo.districts.values.filter { it.id != focus.id }
+            .sortedBy { kotlin.math.hypot(it.center.x - focus.center.x, it.center.y - focus.center.y) }
+            .take(3)
+        return near.mapIndexed { i, d ->
+            Threat(if (i == 1) ThreatType.MISSILE else ThreatType.DRONE, d.oblastId, d.id, now)
+        }
+    }
+
     // ---------------- Обчислення ----------------
 
     suspend fun compute(ctx: Context, region: Region): ChanceResult = withContext(Dispatchers.IO) {
@@ -326,7 +339,7 @@ object Chance {
         val posts = tg.relevant.sortedByDescending { it.time }.distinctBy { it.text }.take(6)
         val mapAlerts = snap?.entries?.filter { AlertApi.fresh(it, now) }?.associate { it.regionId to it.level }.orEmpty()
         val mapThreats = runCatching {
-            threats(ctx, cal.filterNotNull().flatten(), now)
+            threats(ctx, cal.filterNotNull().flatten(), now) + demoThreats(ctx, region, now)
         }.getOrDefault(emptyList())
 
         if (snap != null) {

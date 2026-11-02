@@ -33,7 +33,7 @@ s = lambda n, v: f'    <string name="{n}">{html.escape(v)}</string>'
 print("<?xml version='1.0' encoding='utf-8' standalone='yes' ?>\n<map>")
 print(s("alarms", json.dumps(alarms, ensure_ascii=False)))
 print(s("region", json.dumps(region, ensure_ascii=False)))
-print('    <int name="next_id" value="10" />\n    <boolean name="asked_notif" value="true" />\n    <boolean name="asked_notif_2" value="true" />\n</map>')
+print('    <int name="next_id" value="10" />\n    <boolean name="asked_notif" value="true" />\n    <boolean name="asked_notif_2" value="true" />\n    <boolean name="demo_threats" value="true" />\n</map>')
 PY
 adb push /tmp/p.xml /data/local/tmp/p.xml
 adb shell "cat /data/local/tmp/p.xml | run-as $PKG sh -c 'cat > shared_prefs/calmalarm.xml'"

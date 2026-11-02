@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.LocalContentColor
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.darkColorScheme
@@ -141,8 +142,11 @@ fun AppBackground(modifier: Modifier = Modifier, content: @Composable BoxScope.(
                     )
                 }
             },
-        content = content,
-    )
+    ) {
+        CompositionLocalProvider(LocalContentColor provides MaterialTheme.colorScheme.onBackground) {
+            content()
+        }
+    }
 }
 
 /** Напівпрозора картка з тонкою світлою рамкою. [tint] - колір підсвітки (стан тривоги тощо). */
@@ -176,9 +180,15 @@ fun GlassCard(
         )
     }
     if (onClick != null) {
-        Surface(onClick = onClick, modifier = modifier, shape = shape, color = base, border = border, content = inner)
+        Surface(
+            onClick = onClick, modifier = modifier, shape = shape, color = base,
+            contentColor = MaterialTheme.colorScheme.onSurface, border = border, content = inner,
+        )
     } else {
-        Surface(modifier = modifier, shape = shape, color = base, border = border, content = inner)
+        Surface(
+            modifier = modifier, shape = shape, color = base,
+            contentColor = MaterialTheme.colorScheme.onSurface, border = border, content = inner,
+        )
     }
 }
 

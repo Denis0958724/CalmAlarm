@@ -356,8 +356,8 @@ private fun Gauge(fraction: Float, alert: Boolean, color: Color, center: String,
             drawCircle(Color.White, radius = w * 0.32f, center = tip)
         }
         Column(horizontalAlignment = Alignment.CenterHorizontally) {
-            Text(center, fontSize = 58.sp, fontWeight = FontWeight.Bold, color = color, letterSpacing = (-1).sp)
-            Text(caption, style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.SemiBold)
+            Text(center, fontSize = 52.sp, fontWeight = FontWeight.Bold, color = color, letterSpacing = (-1).sp)
+            Text(caption, style = MaterialTheme.typography.titleSmall, fontWeight = FontWeight.SemiBold)
         }
     }
 }
