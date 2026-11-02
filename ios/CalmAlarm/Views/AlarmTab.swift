@@ -53,7 +53,7 @@ struct AlarmTab: View {
                 .padding(.horizontal, 16)
                 .padding(.bottom, 100)
             }
-            .background(Palette.background)
+            .background(ScreenBackground())
 
             Button {
                 editingIsNew = true
@@ -63,7 +63,7 @@ struct AlarmTab: View {
                     .font(.title2.weight(.semibold))
                     .foregroundStyle(.white)
                     .frame(width: 60, height: 60)
-                    .background(Palette.blue, in: Circle())
+                    .background(Palette.accentGradient, in: Circle())
                     .shadow(color: .black.opacity(0.18), radius: 8, y: 4)
             }
             .accessibilityLabel("Додати будильник")
@@ -110,7 +110,7 @@ private struct WaitingCard: View {
         }
         .foregroundStyle(Palette.onWaitCard)
         .padding(18)
-        .card(Palette.waitCard)
+        .glassCard(tint: Palette.yellow)
     }
 }
 
@@ -130,7 +130,7 @@ private struct PermissionCard: View {
             .buttonStyle(.bordered)
         }
         .padding(16)
-        .card()
+        .glassCard()
     }
 }
 
@@ -185,7 +185,7 @@ private struct AlarmCard: View {
         }
         .padding(.horizontal, 20)
         .padding(.vertical, 16)
-        .card(radius: 24)
+        .glassCard()
         .contentShape(Rectangle())
         .onTapGesture(perform: onTap)
     }

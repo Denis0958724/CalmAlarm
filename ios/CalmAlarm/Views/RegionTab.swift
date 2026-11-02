@@ -13,17 +13,23 @@ struct RegionTab: View {
                 VStack(alignment: .leading, spacing: 12) {
                     ScreenHeader(title: "Регіон", subtitle: "Будильник зважає на тривогу саме тут")
                     if let r = model.region {
-                        HStack(spacing: 14) {
-                            Image(systemName: "mappin.circle.fill")
-                                .font(.system(size: 34))
-                                .foregroundStyle(Palette.accent)
-                            VStack(alignment: .leading, spacing: 2) {
-                                Text(r.oblastName).font(.headline)
-                                Text(r.subtitle).font(.subheadline).foregroundStyle(.secondary)
+                        VStack(alignment: .leading, spacing: 12) {
+                            HStack(spacing: 14) {
+                                Image(systemName: "mappin")
+                                    .font(.system(size: 18, weight: .bold))
+                                    .foregroundStyle(.white)
+                                    .frame(width: 44, height: 44)
+                                    .background(Palette.accentGradient, in: Circle())
+                                VStack(alignment: .leading, spacing: 2) {
+                                    Text(r.oblastName).font(.title3.weight(.bold))
+                                    Text(r.subtitle).font(.subheadline).foregroundStyle(.secondary)
+                                }
                             }
+                            .padding(.horizontal, 6)
+                            RegionMapView(region: r, aspect: 1.45)
                         }
-                        .padding(18)
-                        .card()
+                        .padding(14)
+                        .glassCard(tint: Palette.sky)
                         if r.wholeOblast && (Regions.byId[r.oblastId]?.hasDistricts ?? false) {
                             Text("Зараз будильник чекає, якщо тривога хоча б в одному районі області. Виберіть свій район або місто - тоді він зважатиме лише на тривогу саме у вас.")
                                 .font(.subheadline)
@@ -40,16 +46,18 @@ struct RegionTab: View {
                     } label: {
                         Text(model.region == nil ? "Вибрати регіон" : "Змінити регіон")
                             .font(.headline)
+                            .foregroundStyle(.white)
                             .frame(maxWidth: .infinity)
-                            .padding(.vertical, 6)
+                            .frame(height: 52)
+                            .background(Palette.accentGradient, in: RoundedRectangle(cornerRadius: 18, style: .continuous))
                     }
-                    .buttonStyle(.borderedProminent)
+                    .buttonStyle(.plain)
                     .padding(.top, 4)
                 }
                 .padding(.horizontal, 16)
                 .padding(.bottom, 24)
             }
-            .background(Palette.background)
+            .background(ScreenBackground())
             .toolbar(.hidden, for: .navigationBar)
             .navigationDestination(for: String.self) { key in
                 if key == "pick" {

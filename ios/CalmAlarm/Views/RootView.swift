@@ -77,7 +77,7 @@ struct RegionStatusCard: View {
             .padding(.leading, 18)
             .padding(.vertical, 12)
             .padding(.trailing, 6)
-            .card(d.color.opacity(0.13))
+            .glassCard(tint: d.color)
         } else {
             VStack(alignment: .leading, spacing: 6) {
                 Text("Спершу виберіть свій регіон").font(.headline)
@@ -88,7 +88,7 @@ struct RegionStatusCard: View {
             }
             .foregroundStyle(Palette.onPrimaryContainer)
             .padding(20)
-            .card(Palette.primaryContainer)
+            .glassCard(tint: Palette.sky)
         }
     }
 

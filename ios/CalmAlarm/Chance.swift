@@ -7,6 +7,16 @@ struct MonitorPost: Identifiable, Hashable {
     var id: String { "\(channel)|\(time.timeIntervalSince1970)|\(text.prefix(40))" }
 }
 
+enum ThreatType { case drone, missile }
+
+/// Загроза, яку Повітряні сили згадали за останні 30 хв (місце приблизне: область або район).
+struct Threat: Hashable {
+    var type: ThreatType
+    var oblastId: String
+    var districtId: String?
+    var time: Date
+}
+
 struct ChanceResult {
     var percent: Int
     /// Звичайна ймовірність для цього місця й години, коли поруч тихо.
@@ -17,6 +27,9 @@ struct ChanceResult {
     var posts: [MonitorPost]
     var mapOk: Bool
     var monitorsOk: Bool
+    /// Активні тривоги для карти: регіон → рівень.
+    var alerts: [String: Level] = [:]
+    var threats: [Threat] = []
     var time = Date()
 }
 
@@ -288,6 +301,43 @@ enum Chance {
         return f
     }
 
+    // ---------------- Загрози для карти ----------------
+
+    static let missileWords = ["ракет", "баліст", "крилат", "кинджал", "іскандер", "калібр", "х-101", "х-555", "х-22", "х-59", "х-69", "циркон"]
+    static let droneWords = ["бпла", "шахед", "дрон", "мопед", "герань", "гербер", "ударн"]
+
+    /// Позначки - лише з офіційного каналу Повітряних сил (монітори не враховуємо).
+    static func threats(_ posts: [MonitorPost], now: Date) -> [Threat] {
+        let oblastRes = Regions.oblasts.map { ($0.id, regexFor($0.patterns)) }
+        var distRes: [String: [(String, Rx)]] = [:]
+        for (oid, list) in UaGeo.shared?.districtsByOblast ?? [:] {
+            distRes[oid] = list.compactMap { d in placeStem(d.name).map { (d.id, Rx("(?<!\\p{L})\($0)")) } }
+        }
+        var order: [String] = []
+        var found: [String: Threat] = [:]
+        for p in posts.sorted(by: { $0.time > $1.time }) where p.channel == "Повітряні сили" {
+            let age = now.timeIntervalSince(p.time)
+            if age > tgWindow || age < -5 * 60 { continue }
+            let t = normalize(p.text)
+            if clear.contains(where: { t.contains($0) }) { continue }
+            var types: [ThreatType] = []
+            if missileWords.contains(where: { t.contains($0) }) { types.append(.missile) }
+            if droneWords.contains(where: { t.contains($0) }) { types.append(.drone) }
+            if types.isEmpty { continue }
+            for (oid, re) in oblastRes where re.test(t) {
+                let did = distRes[oid]?.first(where: { $0.1.test(t) })?.0
+                for type in types {
+                    let key = "\(type)|\(oid)|\(did ?? "")"
+                    if found[key] == nil {
+                        found[key] = Threat(type: type, oblastId: oid, districtId: did, time: p.time)
+                        order.append(key)
+                    }
+                }
+            }
+        }
+        return order.prefix(30).compactMap { found[$0] }
+    }
+
     // ---------------- Обчислення ----------------
 
     struct NoData: Error {}
@@ -317,10 +367,15 @@ enum Chance {
         var seenText = Set<String>()
         let posts = Array(tg.relevant.sorted { $0.time > $1.time }.filter { seenText.insert($0.text).inserted }.prefix(6))
 
+        var mapAlerts: [String: Level] = [:]
+        for e in snap?.entries ?? [] where AlertAPI.fresh(e, now: now) { mapAlerts[e.regionId] = e.level }
+        let mapThreats = threats(cal.compactMap { $0 }.flatMap { $0 }, now: now)
+
         if let snap = snap {
             let st = AlertAPI.status(snap, region: region)
             if st.active {
-                return ChanceResult(percent: 100, usualPercent: 100, alertNow: st, reasons: [], posts: posts, mapOk: true, monitorsOk: monitorsOk)
+                return ChanceResult(percent: 100, usualPercent: 100, alertNow: st, reasons: [], posts: posts, mapOk: true,
+                                    monitorsOk: monitorsOk, alerts: mapAlerts, threats: mapThreats)
             }
         }
 
@@ -418,7 +473,9 @@ enum Chance {
             reasons: Array(texts.prefix(5)),
             posts: posts,
             mapOk: snap != nil,
-            monitorsOk: monitorsOk
+            monitorsOk: monitorsOk,
+            alerts: mapAlerts,
+            threats: mapThreats
         )
     }
 }

@@ -30,10 +30,13 @@ enum Palette {
     static let orange = Color(hex: 0xE8711C)
     static let red = Color(hex: 0xD93A3A)
     static let night = Color(hex: 0x14264F)
-    static let blue = Color(hex: 0x2F5BD3)
+    static let blue = Color(hex: 0x3B6CF6)
+    static let sky = Color(hex: 0x4F8CFF)
+    static let violet = Color(hex: 0x7C5CFF)
+    static let accentGradient = LinearGradient(colors: [sky, violet], startPoint: .topLeading, endPoint: .bottomTrailing)
 
     static let accent = Color(light: 0x2F5BD3, dark: 0x9DB7FF)
-    static let background = Color(light: 0xF5F6FA, dark: 0x0E131D)
+    static let background = Color(light: 0xF2F4FA, dark: 0x060A15)
     static let card = Color(light: 0xFFFFFF, dark: 0x161D2A)
     static let cardAlt = Color(light: 0xEEF1F7, dark: 0x18202D)
     static let track = Color(light: 0xE0E4EE, dark: 0x283243)
@@ -62,13 +65,65 @@ extension View {
     }
 }
 
+/// Напівпрозора «скляна» картка з тонкою світлою рамкою і, за бажанням, кольоровою підсвіткою.
+struct GlassCardStyle: ViewModifier {
+    var tint: Color?
+    var radius: CGFloat = 26
+
+    func body(content: Content) -> some View {
+        content
+            .frame(maxWidth: .infinity, alignment: .leading)
+            .background {
+                let shape = RoundedRectangle(cornerRadius: radius, style: .continuous)
+                ZStack {
+                    shape.fill(.ultraThinMaterial)
+                    if let t = tint {
+                        shape.fill(LinearGradient(colors: [t.opacity(0.22), t.opacity(0.04)], startPoint: .topLeading, endPoint: .bottomTrailing))
+                    }
+                    shape.strokeBorder(
+                        LinearGradient(colors: [Color.white.opacity(0.35), Color.white.opacity(0.04)], startPoint: .top, endPoint: .bottom),
+                        lineWidth: 1
+                    )
+                }
+            }
+    }
+}
+
+extension View {
+    func glassCard(tint: Color? = nil, radius: CGFloat = 26) -> some View {
+        modifier(GlassCardStyle(tint: tint, radius: radius))
+    }
+}
+
+/// Фон екранів: глибокий градієнт з м'яким «сяйвом» угорі.
+struct ScreenBackground: View {
+    @Environment(\.colorScheme) private var scheme
+
+    var body: some View {
+        let dark = scheme == .dark
+        ZStack {
+            Palette.background
+            RadialGradient(colors: [Palette.sky.opacity(dark ? 0.30 : 0.18), .clear], center: UnitPoint(x: 0.1, y: -0.02), startRadius: 0, endRadius: 420)
+            RadialGradient(colors: [Palette.violet.opacity(dark ? 0.24 : 0.12), .clear], center: UnitPoint(x: 1.0, y: 0.18), startRadius: 0, endRadius: 360)
+            if dark {
+                RadialGradient(colors: [Color(hex: 0x0E7C86).opacity(0.14), .clear], center: UnitPoint(x: 0.2, y: 1.0), startRadius: 0, endRadius: 420)
+            }
+        }
+        .ignoresSafeArea()
+    }
+}
+
+extension String {
+    var capitalizedFirst: String { prefix(1).uppercased() + dropFirst() }
+}
+
 struct ScreenHeader: View {
     let title: String
     var subtitle: String? = nil
 
     var body: some View {
         VStack(alignment: .leading, spacing: 4) {
-            Text(title).font(.system(size: 30, weight: .bold))
+            Text(title).font(.system(size: 32, weight: .bold)).kerning(-0.5)
             if let s = subtitle {
                 Text(s).font(.subheadline).foregroundStyle(.secondary)
             }

@@ -44,7 +44,7 @@ struct ChanceTab: View {
             .padding(.horizontal, 16)
             .padding(.bottom, 24)
         }
-        .background(Palette.background)
+        .background(ScreenBackground())
         .refreshable { await load() }
         .task(id: ChanceKey(region: model.region, refresh: refresh)) {
             if resultRegion != model.region { result = nil }
@@ -74,23 +74,34 @@ struct ChanceTab: View {
         if let r = result {
             let now = r.alertNow
             let color = now != nil ? levelColor(now?.level) : chanceColor(r.percent)
-            ChanceGauge(
-                fraction: Double(r.percent) / 100,
-                color: color,
-                center: "\(r.percent)%",
-                caption: now != nil ? "Тривога вже триває" : chanceLabel(r.percent)
-            )
-            .padding(.top, 8)
-            Text(alertText(now) ?? "Шанс, що тривогу оголосять у найближчі 30 хвилин")
-                .font(.body)
-                .foregroundStyle(.secondary)
-                .multilineTextAlignment(.center)
-            if now == nil {
-                Text("Зазвичай для вашого місця: \(r.usualPercent)%")
-                    .font(.subheadline)
-                    .foregroundStyle(.secondary.opacity(0.8))
-                    .padding(.top, 2)
+            VStack(spacing: 6) {
+                ChanceGauge(
+                    fraction: Double(r.percent) / 100,
+                    alert: now != nil,
+                    color: color,
+                    center: "\(r.percent)%",
+                    caption: now != nil ? "Тривога вже триває" : chanceLabel(r.percent)
+                )
+                Text(alertText(now) ?? "Шанс, що тривогу оголосять у найближчі 30 хвилин")
+                    .font(.body)
+                    .multilineTextAlignment(.center)
+                    .padding(.horizontal, 20)
+                if now == nil {
+                    Text("Зазвичай для вашого місця: \(r.usualPercent)%")
+                        .font(.subheadline.weight(.medium))
+                        .foregroundStyle(.secondary)
+                        .padding(.horizontal, 12)
+                        .padding(.vertical, 5)
+                        .background(Color.secondary.opacity(0.12), in: Capsule())
+                        .padding(.top, 4)
+                }
             }
+            .frame(maxWidth: .infinity)
+            .padding(.vertical, 18)
+            .glassCard(tint: color)
+
+            mapCard(r)
+                .padding(.top, 14)
 
             if !r.reasons.isEmpty {
                 VStack(alignment: .leading, spacing: 8) {
@@ -103,8 +114,8 @@ struct ChanceTab: View {
                     }
                 }
                 .padding(18)
-                .card()
-                .padding(.top, 20)
+                .glassCard()
+                .padding(.top, 14)
             }
 
             if !r.posts.isEmpty {
@@ -129,7 +140,7 @@ struct ChanceTab: View {
                                 Text(p.text).font(.subheadline).lineLimit(4)
                             }
                             .padding(14)
-                            .card(Palette.cardAlt, radius: 16)
+                            .glassCard(radius: 18)
                         }
                     }
                 }
@@ -167,6 +178,40 @@ struct ChanceTab: View {
         }
     }
 
+    private func mapCard(_ r: ChanceResult) -> some View {
+        let near = threatsNear(model.region ?? Region(oblastId: "", oblastName: ""), r.threats)
+        let parts = (near.0 > 0 ? ["шахеди: \(near.0)"] : []) + (near.1 > 0 ? ["ракети: \(near.1)"] : [])
+        let chip = parts.isEmpty ? "Загроз поруч не видно" : parts.joined(separator: " · ").capitalizedFirst
+        let chipColor = parts.isEmpty ? Palette.green : Palette.orange
+        return VStack(alignment: .leading, spacing: 10) {
+            HStack {
+                Text("Навколо вас").font(.headline)
+                Spacer()
+                Text(chip)
+                    .font(.caption.weight(.semibold))
+                    .foregroundStyle(chipColor)
+                    .padding(.horizontal, 10)
+                    .padding(.vertical, 4)
+                    .background(chipColor.opacity(0.16), in: Capsule())
+            }
+            .padding(.horizontal, 4)
+            if let region = model.region {
+                RegionMapView(region: region, alerts: r.alerts, threats: r.threats)
+            }
+            MapLegend().padding(.horizontal, 4)
+            Text("Тривоги - з офіційної карти. Шахеди й ракети - за повідомленнями Повітряних сил за останні 30 хв, місце приблизне (район або область).")
+                .font(.caption)
+                .foregroundStyle(.secondary)
+                .padding(.horizontal, 4)
+            Text(UaGeo.shared?.attribution ?? "")
+                .font(.system(size: 10))
+                .foregroundStyle(.tertiary)
+                .padding(.horizontal, 4)
+        }
+        .padding(14)
+        .glassCard()
+    }
+
     private func alertText(_ s: RegionStatus?) -> String? {
         guard let s = s else { return nil }
         var t = s.level == .yellow ? "Жовта тривога" : "Червона тривога"
@@ -177,35 +222,49 @@ struct ChanceTab: View {
 
 private struct ChanceGauge: View {
     let fraction: Double
+    let alert: Bool
     let color: Color
     let center: String
     let caption: String
     @State private var shown: Double = 0
 
+    private var gradient: AngularGradient {
+        let colors: [Color] = alert ? [color, color] : [Palette.green, Palette.yellow, Palette.orange, Palette.red, Palette.red]
+        return AngularGradient(gradient: Gradient(colors: colors), center: .center, startAngle: .degrees(0), endAngle: .degrees(360))
+    }
+
     var body: some View {
+        let value = alert ? 1 : min(1, max(0.015, shown))
         ZStack {
             Circle()
                 .trim(from: 0, to: 0.75)
-                .stroke(Palette.track, style: StrokeStyle(lineWidth: 22, lineCap: .round))
+                .stroke(Color.primary.opacity(0.08), style: StrokeStyle(lineWidth: 20, lineCap: .round))
                 .rotationEffect(.degrees(135))
             Circle()
-                .trim(from: 0, to: 0.75 * min(1, max(0, shown)))
-                .stroke(color, style: StrokeStyle(lineWidth: 22, lineCap: .round))
+                .trim(from: 0, to: 0.75 * value)
+                .stroke(gradient, style: StrokeStyle(lineWidth: 20, lineCap: .round))
+                .rotationEffect(.degrees(135))
+                .blur(radius: 10)
+                .opacity(0.5)
+            Circle()
+                .trim(from: 0, to: 0.75 * value)
+                .stroke(gradient, style: StrokeStyle(lineWidth: 20, lineCap: .round))
                 .rotationEffect(.degrees(135))
             VStack(spacing: 0) {
                 Text(center)
-                    .font(.system(size: 56, weight: .semibold))
+                    .font(.system(size: 58, weight: .bold))
                     .foregroundStyle(color)
+                    .monospacedDigit()
                 Text(caption).font(.headline)
             }
         }
-        .frame(width: 212, height: 212)
-        .padding(14)
+        .frame(width: 196, height: 196)
+        .padding(18)
         .onAppear {
-            withAnimation(.easeOut(duration: 0.9)) { shown = fraction }
+            withAnimation(.easeOut(duration: 1.0)) { shown = fraction }
         }
         .onChange(of: fraction) { _, v in
-            withAnimation(.easeOut(duration: 0.9)) { shown = v }
+            withAnimation(.easeOut(duration: 1.0)) { shown = v }
         }
     }
 }
