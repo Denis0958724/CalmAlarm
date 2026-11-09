@@ -17,6 +17,8 @@ adb shell settings put system screen_off_timeout 1800000
 adb shell svc power stayon true
 adb shell wm dismiss-keyguard
 adb install -r -g "$APK" || exit 1
+adb shell dumpsys deviceidle whitelist +$PKG || true
+adb shell cmd appops set $PKG USE_FULL_SCREEN_INTENT allow || true
 adb shell am start -n $PKG/.MainActivity
 sleep 4
 adb shell am force-stop $PKG
